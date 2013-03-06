@@ -2,7 +2,7 @@ Ext.define('AM.view.ProcessList', {
     extend: 'Ext.tree.Panel',
     alias: 'widget.processList',
 		// requires : [
-		// 	'AM.view.management.Employee'
+		// 	'management.Employee'
 		// ],
 		    
 // to perform lazy loading 

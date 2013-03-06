@@ -1,17 +1,22 @@
 Ext.define('AM.view.management.Employee', {
-    extend: 'Ext.panel.Panel',
+    extend: 'AM.view.Worksheet',
     alias: 'widget.employeeProcess',
 		// html: "This is the employee... ",
-		layout: 'hbox',
+		// layout: 'hbox',
+		layout : {
+			type : 'vbox'
+		},
 		
 		items : [
 			{
-				text : "The grid",
-				xtype : 'panel'
+				html : "The grid",
+				xtype : 'panel',
+				height : 250
 			},
 			{
-				text : "the details viewer",
-				xtype : 'panel'
+				html : "the details viewer",
+				xtype : 'panel',
+				flex : 1 
 			}
 		]
 });
