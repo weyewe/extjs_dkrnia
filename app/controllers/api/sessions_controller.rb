@@ -29,7 +29,9 @@ class Api::SessionsController < Api::BaseApiController
   def destroy
     # resource = User.find_for_database_authentication(:email => params[:user_login][:email])
     resource = User.find_by_authentication_token( params[:auth_token])
-    resource.authentication_token = nil
+    if resource
+      resource.authentication_token = nil
+    end
     # resource.save
     
     if resource and resource.save

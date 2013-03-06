@@ -79,7 +79,7 @@ Ext.define("AM.controller.Authentication", {
 		me.destroyAuthentication();
 		// this could go to the localStorage. much more awesome 
 		// me.showLoginForm();
-		// window.location.reload(); 
+		
 	},
 	
 	destroyAuthentication: function(){
@@ -97,11 +97,13 @@ Ext.define("AM.controller.Authentication", {
 					localStorage.removeItem('currentUser');
 					
 					me.showLoginForm();
+					window.location.reload(); 
 				
 		    },
 		    failure: function(result, request ) {
 						me.getViewport().setLoading( false ) ;
 						Ext.Msg.alert("Logout Error", "Can't Logout");
+						window.location.reload(); 
 		    }
 		});
 	},
