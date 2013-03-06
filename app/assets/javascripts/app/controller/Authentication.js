@@ -19,16 +19,12 @@ Ext.define("AM.controller.Authentication", {
 	
 	
 	onViewportLoaded: function(){
-		// console.log("The viewport is loaded");
 		var me = this;
 		var currentUserBase = localStorage.getItem('currentUser');
 		if( currentUserBase === null){
-			// show the login page
 			me.showLoginForm(); 
 		}else{
-			// decode the currentUserBase
 			me.currentUser = Ext.decode( currentUserBase ) ;
-			// show the protected content
 			me.showProtectedArea(); 
 		}
 	},
@@ -148,13 +144,9 @@ Ext.define("AM.controller.Authentication", {
 	showProtectedArea : function(){
 		var me = this; 
 		me.getViewport().getLayout().setActiveItem( 1) ;
-		// hide all objects 
 	},
 	showLoginForm : function(){
-		// console.log("The login form is shown");
 		var me = this;
 		me.getViewport().getLayout().setActiveItem( 0 ) ;
-		
-		// unhide all objects based on authroization
 	}
 });
