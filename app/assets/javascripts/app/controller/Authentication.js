@@ -41,55 +41,15 @@ Ext.define("AM.controller.Authentication", {
 				click : this.onLoginClick
 			},
 			
-			"button#logoutBtn": {
+			"button[action=logoutUser]": {
 				click : this.onLogoutClick
 			},
 			'vp' : {
 				'render' : this.onViewportLoaded
-			},
-			
-			'button#coffeeBtn': {
-				click : this.onCoffeeClick
-			},
-			
-			'button#massageBtn': {
-				click: this.onMassageClick
-			}
-			
+			} 
 		});
 	},
-	
-	onCoffeeClick : function(btn){
-		console.log("Client: Coffee is coming!!");
-		
-		Ext.Ajax.request({
-		    url: 'api/users/say_hi',
-		    method: 'POST',
-		    params: {
-		    },
-		    jsonData: {},
-		    success: function(result, request ) {
-						console.log("Client: make coffee success");
-		
-
-						
-						var responseText=  result.responseText; 
-						var data = Ext.decode(responseText ); 
-						
-						console.log( data['msg']);
-				 
-		    },
-		    failure: function(result, request ) {
-						console.log("Client: make coffee failed");
-		    }
-		});
-		
-		
-	},
-	
-	onMassageClick : function(btn){
-		console.log("Special massage is on its way");
-	},
+ 
 	
 	onLoginClick: function( button ){
 		var me = this; 
