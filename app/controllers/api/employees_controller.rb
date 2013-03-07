@@ -1,8 +1,8 @@
 class Api::EmployeesController < Api::BaseApiController
   
   def index
-    @objects = Employee.where(:is_deleted => false).page(params[:page]).per(params[:limit]).order("id DESC")
-    render :json => { :employees => @objects , :total => Employee.all.count, :success => true }
+    @objects = Employee.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+    render :json => { :employees => @objects , :total => Employee.active_objects.count, :success => true }
   end
 
   def create
@@ -11,14 +11,15 @@ class Api::EmployeesController < Api::BaseApiController
     if @object.save
       render :json => { :success => true, 
                         :employees => [@object] , 
-                        :total => Employee.all.count }  
+                        :total => Employee.active_objects.count }  
     else
       msg = {
         :success => false, 
         :message => {
-          :errors => {
-            :name => "Nama tidak boleh kosong"
-          }
+          :errors => extjs_error_format( @object.errors ) 
+          # :errors => {
+          #   :name => "Nama tidak boleh bombastic"
+          # }
         }
       }
       
@@ -32,7 +33,7 @@ class Api::EmployeesController < Api::BaseApiController
     if @object.update_attributes(params[:employee])
       render :json => { :success => true,   
                         :employees => [@object],
-                        :total => Employee.all.count  } 
+                        :total => Employee.active_objects.count  } 
     else
       msg = {
         :success => false, 
@@ -51,6 +52,10 @@ class Api::EmployeesController < Api::BaseApiController
     @object = Employee.find(params[:id])
     @object.destroy
 
-    render :json => { :success => true, :total => Employee.all.count }  
+    if self.is_deleted
+      render :json => { :success => true, :total => Employee.active_objects.count }  
+    else
+      render :json => { :success => false, :total => Employee.active_objects.count }  
+    end
   end
 end
