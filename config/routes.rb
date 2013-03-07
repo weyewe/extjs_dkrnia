@@ -4,7 +4,7 @@ ExtjsDikarunia::Application.routes.draw do
 
   namespace :api do
     devise_for :users
-    match 'users/say_hi' => 'sessions#say_hi' , :as => :say_hi
+    match 'api/authenticate_auth_token' => 'api/sessions#authenticate_auth_token', :as => :authenticate_auth_token
     resources :employees
     
     match 'update_password' => "passwords#update" , :as => :update_password, :method => :put

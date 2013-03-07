@@ -50,7 +50,7 @@ class Api::EmployeesController < Api::BaseApiController
 
   def destroy
     @object = Employee.find(params[:id])
-    @object.destroy
+    @object.delete(current_user)
 
     if self.is_deleted
       render :json => { :success => true, :total => Employee.active_objects.count }  

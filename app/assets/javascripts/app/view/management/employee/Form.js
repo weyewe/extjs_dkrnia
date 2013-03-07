@@ -13,15 +13,43 @@ Ext.define('AM.view.management.employee.Form', {
     this.items = [{
       xtype: 'form',
 			msgTarget	: 'side',
-      items: [{
-        xtype: 'hidden',
-        name : 'id',
-        fieldLabel: 'id'
-      }, {
-        xtype: 'textfield',
-        name : 'name',
-        fieldLabel: ' Name'
-      } ]
+			border: false,
+      bodyPadding: 10,
+			fieldDefaults: {
+          labelWidth: 165,
+					anchor: '100%'
+      },
+      items: [
+				{
+	        xtype: 'hidden',
+	        name : 'id',
+	        fieldLabel: 'id'
+	      },{
+	        xtype: 'textfield',
+	        name : 'name',
+	        fieldLabel: ' Name'
+	      },{
+					xtype: 'textfield',
+					name : 'phone',
+					fieldLabel: 'Phone'
+				},{
+					xtype: 'textfield',
+					name : 'mobile',
+					fieldLabel: 'HP'
+				},{
+					xtype: 'textfield',
+					name : 'email',
+					fieldLabel: 'Email'
+				},{
+					xtype: 'textfield',
+					name : 'bbm_pin',
+					fieldLabel: 'PIN BB'
+				},{
+					xtype: 'textarea',
+					name : 'address',
+					fieldLabel: 'Alamat'
+				}
+			]
     }];
 
     this.buttons = [{

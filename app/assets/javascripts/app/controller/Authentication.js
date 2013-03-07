@@ -16,6 +16,30 @@ Ext.define("AM.controller.Authentication", {
 		} 
 	],
 	
+	onLaunch : function(){
+		var me = this; 
+		if( me.currentUser ){
+			me.getViewport().setLoading( true ) ;
+			Ext.Ajax.request({
+			    url: 'api/authenticate_auth_token',
+			    method: 'POST',
+			    params: {
+			    },
+			    jsonData: {},
+			    success: function(result, request ) {
+							me.getViewport().setLoading( false ) ;
+			    },
+			    failure: function(result, request ) {
+							me.getViewport().setLoading( false ) ;
+							me.destroyAuthentication();
+							me.showLoginForm(); 
+							window.location.reload();
+			    }
+			});
+			
+		}
+		
+	},
 	
 	
 	onViewportLoaded: function(){

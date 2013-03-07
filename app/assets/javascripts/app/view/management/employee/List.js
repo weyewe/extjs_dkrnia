@@ -7,6 +7,7 @@ Ext.define('AM.view.management.employee.List' ,{
 
 	initComponent: function() {
 		this.columns = [
+			{ header: 'ID', dataIndex: 'id'},
 			{ header: ' Name',  dataIndex: 'name',  flex: 1 , sortable: false} 
 		];
 
