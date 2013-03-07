@@ -5,9 +5,13 @@ ExtjsDikarunia::Application.routes.draw do
   namespace :api do
     devise_for :users
     match 'authenticate_auth_token' => 'sessions#authenticate_auth_token', :as => :authenticate_auth_token
-    resources :employees
-    
     match 'update_password' => "passwords#update" , :as => :update_password, :method => :put
+    
+    
+    resources :employees
+    resources :app_users 
+    
+    
   end
 
 end

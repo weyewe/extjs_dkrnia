@@ -39,32 +39,27 @@ Ext.define("AM.controller.Navigation", {
 		this.setActiveExample( record.get('viewClass'), record.get('text'));
 	},
 	setActiveExample: function(className, title) {
+			console.log("Gonna set active example");
+			
       var worksheetPanel = this.getWorksheetPanel();
       
-      // if (!title) {
-      //     title = className.split('.').reverse()[0];
-      // }
-      // 
-      //update the title on the panel
+      console.log("Gonna set title");
       worksheetPanel.setTitle(title);
       
-      //remember the className so we can load up this example next time
-      // location.hash = title.toLowerCase().replace(' ', '-');
-
-      //set the browser window title
-      // document.title = document.title.split(' - ')[0] + ' - ' + title;
-      
-      //create the example
+      console.log("gonna create the worksheet with className: "  +className );
       worksheet = Ext.create(className);
-      
-      //remove all items from the example panel and add new example
-// if it is deleted and created.. will the controller still recognize it? 
-// wait, remove doesn't mean destroy. it is just 'removing' the component out of the vbox 
-// NOPE. remove does mean DESTROY.. se.. example = Ext.create( className ); 
-// one thing to check: will the controller still be waiting to control the assigned data? 
+        
+			if(worksheet){
+				console.log( "worksheet presents");
+			}else{
+				console.log(" !!!!!!!!!!!!!!!! worksheet is not created");
+			}
+
+			console.log("Gonna remove all shite");
       worksheetPanel.removeAll();
+			console.log("gonna add the newly created worksheet");
       worksheetPanel.add(worksheet);
-// what makes sense is using card layout. triggered by this examples.. Or, we can check out the code base for 
-// try_ext .. 
+			console.log("done adding worksheet");
+ 
   }
 });
