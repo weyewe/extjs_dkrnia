@@ -21,7 +21,7 @@ Ext.define('AM.controller.Employees', {
       'employeelist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
-				show : this.loadObjectList
+				afterrender : this.loadObjectList,
       },
       'employeeform button[action=save]': {
         click: this.updateObject
@@ -40,32 +40,23 @@ Ext.define('AM.controller.Employees', {
   },
  
 
-	loadObjectList : function(){
-		console.log("Gonna load Object List");
+	loadObjectList : function(me){
+		me.getStore().load();
 	},
 
   addObject: function() {
-		console.log("Gonna Add Object");
     var view = Ext.widget('employeeform');
     view.show();
   },
 
   editObject: function() {
-		console.log("event listener editObject");
     var record = this.getList().getSelectedObject();
-		if( record ) {
-			console.log("The name is " + record.get("name"));
-		}
     var view = Ext.widget('employeeform');
-		if( view ) {
-			console.log("The view is not nil");
-		}
+
     view.down('form').loadRecord(record);
-// view.show();
   },
 
   updateObject: function(button) {
-		console.log("Gonna Call update user");
     var win = button.up('window');
     var form = win.down('form');
 
@@ -75,21 +66,18 @@ Ext.define('AM.controller.Employees', {
 
 		
 		if( record ){
-			console.log("Update action");
 			record.set( values );
 			 
 			form.setLoading(true);
 			record.save({
 				success : function(record){
 					form.setLoading(false);
-					console.log("UPDATE is successful");
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					win.close();
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
-					console.log("UPDATE is a failure");
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
@@ -99,7 +87,6 @@ Ext.define('AM.controller.Employees', {
 			 
 		}else{
 			//  no record at all  => gonna create the new one 
-			console.log("NO USER. GONNA CREATE");
 			var me  = this; 
 			var newObject = new AM.model.Employee( values ) ;
 			
@@ -109,7 +96,6 @@ Ext.define('AM.controller.Employees', {
 			form.setLoading(true);
 			newObject.save({
 				success: function(record){
-					console.log("This is successful");
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					form.setLoading(false);
@@ -118,7 +104,6 @@ Ext.define('AM.controller.Employees', {
 				},
 				failure: function( record, op){
 					form.setLoading(false);
-					console.log("This is a failure");
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
