@@ -18,7 +18,10 @@ Ext.define("AM.controller.Authentication", {
 	
 	onLaunch : function(){
 		var me = this; 
-		if( me.currentUser ){
+		var currentUser = Ext.decode( localStorage.getItem('currentUser'));
+		
+		if( currentUser ){
+			me.currentUser = currentUser; 
 			me.getViewport().setLoading( true ) ;
 			Ext.Ajax.request({
 			    url: 'api/authenticate_auth_token',
@@ -32,8 +35,8 @@ Ext.define("AM.controller.Authentication", {
 			    failure: function(result, request ) {
 							me.getViewport().setLoading( false ) ;
 							me.destroyAuthentication();
-							me.showLoginForm(); 
-							window.location.reload();
+							// me.showLoginForm(); 
+							// window.location.reload();
 			    }
 			});
 			

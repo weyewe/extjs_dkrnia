@@ -6,10 +6,7 @@ Ext.define('AM.controller.Employees', {
 
   views: [
     'management.employee.List',
-    'management.employee.Form'// ,
-    // 	'Cardpanel',  
-    // 	'user.DepartmentManager',
-    // 	'user.EmployeeManager'
+    'management.employee.Form'
   ],
 
   	refs: [
@@ -23,7 +20,8 @@ Ext.define('AM.controller.Employees', {
     this.control({
       'employeelist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange
+        selectionchange: this.selectionChange,
+				show : this.loadObjectList
       },
       'employeeform button[action=save]': {
         click: this.updateObject
@@ -41,6 +39,10 @@ Ext.define('AM.controller.Employees', {
     });
   },
  
+
+	loadObjectList : function(){
+		console.log("Gonna load Object List");
+	},
 
   addObject: function() {
 		console.log("Gonna Add Object");

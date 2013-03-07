@@ -1,6 +1,6 @@
 class Api::SessionsController < Api::BaseApiController
   before_filter :authenticate_user!, :except => [:create, :destroy, :say_hi ]
-  before_filter :ensure_params_exist, :except => [:say_hi, :destroy]
+  before_filter :ensure_params_exist, :except => [:say_hi, :destroy, :authenticate_auth_token]
   respond_to :json
  
   def create
@@ -24,6 +24,10 @@ class Api::SessionsController < Api::BaseApiController
     render :json=> {:success=>true, 
                     :msg => "Server: This is your coffee!"
             }
+  end
+  
+  def authenticate_auth_token
+    render :json => {:success => true }
   end
  
   def destroy
