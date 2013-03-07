@@ -75,7 +75,7 @@ Ext.define("AM.controller.Authorization", {
 	                    
                     { 
                         text:'Item Database', 
-                        viewClass:'Alpha', 
+                        viewClass:'AM.view.inventory.ItemDatabase', 
                         leaf:true, 
                         iconCls:'text' 
                     },

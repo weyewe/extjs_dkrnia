@@ -10,6 +10,7 @@ ExtjsDikarunia::Application.routes.draw do
     
     resources :employees
     resources :app_users 
+    resources :items 
     
     
   end
