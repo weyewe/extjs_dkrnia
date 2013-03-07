@@ -25,16 +25,14 @@ Ext.define('AM.view.ProtectedContent', {
 								xtype: 'processList'
 							}, 
               {
-                  flex: 1,
+									flex :  1, 
                   title: '&nbsp;',
-                  id   : 'worksheetPanel',
-                  layout: {
-                      type: 'vbox'// ,
-                      //                       align: 'center',
-                      //                       pack: 'center'
-                  },
-                  overflowY: 'auto',
+                  id   : 'worksheetPanel', 
+                  // overflowY: 'auto',
                   bodyPadding: 0,
+									layout : {
+										type: 'fit'
+									},
 									items : [
 										{
 											html : "This is the placeholder"
