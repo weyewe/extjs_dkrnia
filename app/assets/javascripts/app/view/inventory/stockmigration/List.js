@@ -1,32 +1,28 @@
-Ext.define('AM.view.inventory.itemdatabase.List' ,{
+Ext.define('AM.view.inventory.stockmigration.List' ,{
   	extend: 'Ext.grid.Panel',
-  	alias : 'widget.itemdatabaselist',
+  	alias : 'widget.stockmigrationlist',
 
-  	store: 'Items',  
+  	store: 'StockMigrations', 
+ 
 
 	initComponent: function() {
 		this.columns = [
-			{ header: 'Nama',  dataIndex: 'name',  flex: 1 , sortable: false},
-			{ header: 'Supplier Code',  dataIndex: 'supplier_code',  flex: 1 , sortable: false},
-			{ header: 'Customer Code',  dataIndex: 'customer_code',  flex: 1 , sortable: false}
+			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
+			{ header: 'Quantity',  dataIndex: 'quantity',  flex: 1 , sortable: false} 
 		];
 
 		this.addObjectButton = new Ext.Button({
-			text: 'Add Item',
+			text: 'Add StockMigration',
 			action: 'addObject'
 		});
 
 		this.editObjectButton = new Ext.Button({
-			text: 'Edit Item',
+			text: 'Edit StockMigration',
 			action: 'editObject',
 			disabled: true
 		});
 
-		this.deleteObjectButton = new Ext.Button({
-			text: 'Delete Item',
-			action: 'deleteObject',
-			disabled: true
-		});
+	 
  
 
 
