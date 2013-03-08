@@ -72,7 +72,12 @@ Ext.define("AM.controller.Authorization", {
 	                expanded: true,
 	                children:
 	                [
-	                    
+										{ 
+		                     text:'Vendor', 
+		                     viewClass:'AM.view.inventory.Vendor', 
+		                     leaf:true, 
+		                     iconCls:'text' 
+		                 },
                     { 
                         text:'Item Database', 
                         viewClass:'AM.view.inventory.ItemDatabase', 
@@ -87,6 +92,41 @@ Ext.define("AM.controller.Authorization", {
                     },
 										{ 
                         text:'Penerimaan', 
+                        viewClass:'Bravo', 
+                        leaf:true, 
+                        iconCls:'text' 
+                    }
+	                    
+	                ]
+								},
+								{
+									text:'Sales', 
+	                viewClass:'Will', 
+	                iconCls:'text-folder', 
+	                expanded: true,
+	                children:
+	                [
+	                    
+                    { 
+                        text:'Customer', 
+                        viewClass:'Bravo', 
+                        leaf:true, 
+                        iconCls:'text' 
+                    },
+                    { 
+                        text:'Penjualan', 
+                        viewClass:'Bravo', 
+                        leaf:true, 
+                        iconCls:'text' 
+                    },
+										{ 
+                        text:'Pengiriman', 
+                        viewClass:'Bravo', 
+                        leaf:true, 
+                        iconCls:'text' 
+                    },
+										{ 
+                        text:'Sales Return', 
                         viewClass:'Bravo', 
                         leaf:true, 
                         iconCls:'text' 

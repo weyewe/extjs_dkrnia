@@ -9,6 +9,8 @@ ExtjsDikarunia::Application.routes.draw do
     
     
     resources :employees
+    resources :vendors
+    resources :customers
     resources :app_users 
     resources :items 
     resources :stock_migrations 
