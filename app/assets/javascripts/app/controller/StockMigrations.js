@@ -1,72 +1,87 @@
-Ext.define('AM.controller.ItemDatabases', {
+Ext.define('AM.controller.StockMigrations', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Items'],
-  models: ['Item'],
+  stores: ['StockMigrations', 'Items'],
+  models: ['StockMigration'],
 
   views: [
-    'inventory.itemdatabase.List',
-    'inventory.itemdatabase.Form',
-		'inventory.stockmigration.List',
+    'inventory.stockmigration.List',
+    'inventory.stockmigration.Form',
+		'inventory.itemdatabase.List'
   ],
 
   refs: [
 		{
 			ref: 'list',
-			selector: 'itemdatabaselist'
+			selector: 'stockmigrationlist'
 		},
 		{
-			ref : 'stockMigrationList',
-			selector : 'stockmigrationlist'
+			ref : 'itemList',
+			selector : 'itemdatabaselist'
 		}
 	],
 
   init: function() {
     this.control({
-      'itemdatabaselist': {
+      'stockmigrationlist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange,
-				afterrender : this.loadObjectList,
+        selectionchange: this.selectionChange// ,
+        // 				afterrender : this.loadObjectList,
       },
-      'itemdatabaseform button[action=save]': {
+      'stockmigrationform button[action=save]': {
         click: this.updateObject
       },
-      'itemdatabaselist button[action=addObject]': {
+      'stockmigrationlist button[action=addObject]': {
         click: this.addObject
       },
-      'itemdatabaselist button[action=editObject]': {
+      'stockmigrationlist button[action=editObject]': {
         click: this.editObject
       },
-      'itemdatabaselist button[action=deleteObject]': {
+      'stockmigrationlist button[action=deleteObject]': {
         click: this.deleteObject
       } 
-			
 		
     });
   },
  
-
-	loadObjectList : function(me){
-		me.getStore().load();
-	},
+// the store will only be loaded if the item is clicked
+	// loadObjectList : function(me){
+	// 	me.getStore().load();
+	// },
 
   addObject: function() {
-    var view = Ext.widget('itemdatabaseform');
-    view.show();
+		
+		// I want to get the currently selected item 
+		var record = this.getItemList().getSelectedObject();
+		if(!record){
+			return; 
+		}
+		 
+    var view = Ext.widget('stockmigrationform');
+		
+		view.setParentData( record );
+		 
+		
+		
+		
+    view.show(); 
   },
 
   editObject: function() {
+		var parentRecord = this.getItemList().getSelectedObject();
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('itemdatabaseform');
+    var view = Ext.widget('stockmigrationform');
 
     view.down('form').loadRecord(record);
+		view.setParentData( parentRecord );
   },
 
   updateObject: function(button) {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getItemsStore();
+		var parentRecord = this.getItemList().getSelectedObject();
+    var store = this.getStockMigrationsStore();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -77,9 +92,15 @@ Ext.define('AM.controller.ItemDatabases', {
 			form.setLoading(true);
 			record.save({
 				success : function(record){
+					console.log("successfully loaded the shite in stock migration");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					
+					store.load({
+						params: {
+							item_id : parentRecord.get('id')
+						}
+					});
 					win.close();
 				},
 				failure : function(record,op ){
@@ -94,7 +115,7 @@ Ext.define('AM.controller.ItemDatabases', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Item( values ) ;
+			var newObject = new AM.model.StockMigration( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
@@ -103,7 +124,11 @@ Ext.define('AM.controller.ItemDatabases', {
 			newObject.save({
 				success: function(record){
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					store.load({
+						params: {
+							item_id : parentRecord.get('id')
+						}
+					});
 					form.setLoading(false);
 					win.close();
 					
@@ -122,7 +147,7 @@ Ext.define('AM.controller.ItemDatabases', {
     var record = this.getList().getSelectedObject();
 
     if (record) {
-      var store = this.getItemsStore();
+      var store = this.getStockMigrationsStore();
       store.remove(record);
       store.sync();
 // to do refresh programmatically
@@ -133,36 +158,15 @@ Ext.define('AM.controller.ItemDatabases', {
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
-		var record = this.getList().getSelectedObject();
-		
-		if(!record){
-			return; 
-		}
-		var stockMigrationGrid = this.getStockMigrationList();
-		stockMigrationGrid.setTitle("StockMigration: " + record.get('name'));
-		stockMigrationGrid.getStore().load({
-			params : {
-				item_id : record.get('id')
-			},
-			callback : function(records, options, success){
-				
-				var totalObject  = records.length;
-				if( totalObject ===  0 ){
-					stockMigrationGrid.enableAddButton(); 
-				}else{
-					stockMigrationGrid.disableAddButton(); 
-				}
-			}
-		})
+
+		// var record = this.getList().getSelectedObject();
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-
-		// load the stock migration
-		// load the stock adjustment 
+ 
   }
 
 });

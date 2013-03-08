@@ -1,7 +1,7 @@
 class Api::StockMigrationsController < Api::BaseApiController
   
   def index
-    @objects = StockMigration.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+    @objects = StockMigration.where(:item_id => params[:item_id]).page(params[:page]).per(params[:limit]).order("id DESC")
     render :json => { :stock_migrations => @objects , :total => StockMigration.active_objects.count, :success => true }
   end
 

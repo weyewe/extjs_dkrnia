@@ -13,7 +13,8 @@ Ext.define('AM.view.inventory.stockmigration.List' ,{
 
 		this.addObjectButton = new Ext.Button({
 			text: 'Add StockMigration',
-			action: 'addObject'
+			action: 'addObject',
+			disabled : true 
 		});
 
 		this.editObjectButton = new Ext.Button({
@@ -27,7 +28,7 @@ Ext.define('AM.view.inventory.stockmigration.List' ,{
 
 
 
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton];
+		this.tbar = [this.addObjectButton, this.editObjectButton ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,
@@ -46,11 +47,17 @@ Ext.define('AM.view.inventory.stockmigration.List' ,{
 
 	enableRecordButtons: function() {
 		this.editObjectButton.enable();
-		this.deleteObjectButton.enable();
+		// this.deleteObjectButton.enable();
 	},
 
 	disableRecordButtons: function() {
 		this.editObjectButton.disable();
-		this.deleteObjectButton.disable();
+		// this.deleteObjectButton.disable();
+	},
+	enableAddButton: function(){
+		this.addObjectButton.enable();
+	},
+	disableAddButton : function(){
+		this.addObjectButton.disable();
 	}
 });

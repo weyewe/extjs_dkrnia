@@ -12,6 +12,9 @@ gem 'kaminari'
 gem 'devise'
 gem 'the_role'
 
+gem "squeel" 
+gem 'acts_as_decimal'
+
 
 gem 'uuidtools'
 
@@ -44,3 +47,9 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+group :development, :test do 
+  
+  gem "rspec-rails", "~> 2.6"
+  gem "factory_girl_rails", "~> 4.0"
+  # gem "faker"
+end

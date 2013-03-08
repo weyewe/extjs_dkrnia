@@ -4,6 +4,7 @@ Ext.define('AM.model.StockMigration', {
     	{ name: 'id', type: 'int' },
     	{ name: 'code', type: 'string' } ,
 			{ name: 'quantity', type: 'int' },
+			{ name: 'item_id', type: 'int' }
   	],
 
 	 

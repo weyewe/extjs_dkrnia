@@ -66,4 +66,25 @@ class User < ActiveRecord::Base
     self.save
     return self  
   end
+  
+  def self.create_main_user(new_user_params) 
+    new_user = User.new( :email => new_user_params[:email], 
+                            :password => new_user_params[:password],
+                            :password => new_user_params[:password_confirmation] )
+                      
+  
+    admin_role = Role.find_by_name ROLE_NAME[:admin]
+    new_user.role_id = admin_role.id 
+    new_user.is_main_user = true
+    
+    new_user.save 
+  
+    return new_user 
+  end
+  def set_as_main_user 
+    admin_role = Role.find_by_name ROLE_NAME[:admin]
+    self.role_id = admin_role.id 
+    self.is_main_user = true 
+    self.save 
+  end
 end

@@ -6,6 +6,7 @@ Ext.define('AM.view.inventory.stockmigration.Form', {
   layout: 'fit',
 	width	: 500,
   autoShow: true,  // does it need to be called?
+	mask : true, 
 // win.show() 
 // if autoShow == true.. on instantiation, will automatically be called 
 	
@@ -20,6 +21,29 @@ Ext.define('AM.view.inventory.stockmigration.Form', {
 					anchor: '100%'
       },
       items: [
+				{
+	        xtype: 'hidden',
+	        name : 'item_id',
+	        fieldLabel: 'item_id'
+	      },
+				{
+					xtype: 'displayfield',
+					fieldLabel: 'Nama Item',
+					name: 'item_name',
+					value: '10'
+				},
+				{
+					xtype: 'displayfield',
+					fieldLabel: 'Code Customer',
+					name: 'item_customer_code',
+					value: '10'
+				},
+				{
+					xtype: 'displayfield',
+					fieldLabel: 'Code Supplier',
+					name: 'item_supplier_code',
+					value: '10'
+				},
 				{
 	        xtype: 'textfield',
 	        name : 'quantity',
@@ -38,6 +62,14 @@ Ext.define('AM.view.inventory.stockmigration.Form', {
     }];
 
     this.callParent(arguments);
-  }
+  },
+
+
+	setParentData: function( record ){
+		this.down('form').getForm().findField('item_name').setValue(record.get('name'));
+		this.down('form').getForm().findField('item_customer_code').setValue( record.get('customer_code'));
+		this.down('form').getForm().findField('item_supplier_code').setValue( record.get('supplier_code'));
+		this.down('form').getForm().findField('item_id').setValue( record.get('id'));
+	}
 });
 

@@ -5,12 +5,12 @@ class StockMigration < ActiveRecord::Base
   include StockEntryDocumentEntry
   # attr_accessible :title, :body
   belongs_to :item
-  validates_presence_of :quantity 
+  validates_presence_of :quantity , :item_id
   validate :quantity_not_zero
   validate :only_one_stock_migration_per_item
   
   def self.active_objects
-    self.all 
+    self.order("id DESC") 
   end
   
   def quantity_not_zero
@@ -35,11 +35,15 @@ class StockMigration < ActiveRecord::Base
     # total_sales_order = SalesOrder.where()
     start_datetime = Date.today.at_beginning_of_month.to_datetime
     end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
+    puts "The start_datetime: #{start_datetime}"
+    puts "The end_datetime: #{end_datetime}"
     
     counter = self.class.where{
       (self.created_at >= start_datetime)  & 
       (self.created_at < end_datetime )
     }.count
+    # counter = 55 
+    
     
     if self.is_confirmed?
       counter = self.class.where{
@@ -48,6 +52,8 @@ class StockMigration < ActiveRecord::Base
         (self.is_confirmed.eq true )
       }.count
     end
+    
+    # counter = 55 
     
   
     header = ""
@@ -73,11 +79,15 @@ class StockMigration < ActiveRecord::Base
     new_object.item_id      = params[:item_id]
     
     new_object.quantity     = params[:quantity]
+    puts "The item_id: #{new_object.item_id}"
+    puts "The quantity: #{new_object.quantity}"
      
     ActiveRecord::Base.transaction do
       if new_object.save  
+        puts "before the genereate code"
         new_object.generate_code
         # and auto confirm 
+        puts "before the employee"
         new_object.confirm(employee)
       end 
     end
