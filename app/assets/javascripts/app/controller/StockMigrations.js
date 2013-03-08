@@ -95,12 +95,13 @@ Ext.define('AM.controller.StockMigrations', {
 					console.log("successfully loaded the shite in stock migration");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
-					
+					form.fireEvent('item_quantity_changed');
 					store.load({
 						params: {
 							item_id : parentRecord.get('id')
 						}
 					});
+					
 					win.close();
 				},
 				failure : function(record,op ){
@@ -129,6 +130,7 @@ Ext.define('AM.controller.StockMigrations', {
 							item_id : parentRecord.get('id')
 						}
 					});
+					form.fireEvent('item_quantity_changed');
 					form.setLoading(false);
 					win.close();
 					

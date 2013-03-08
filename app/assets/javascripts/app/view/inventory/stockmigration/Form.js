@@ -6,7 +6,7 @@ Ext.define('AM.view.inventory.stockmigration.Form', {
   layout: 'fit',
 	width	: 500,
   autoShow: true,  // does it need to be called?
-	mask : true, 
+	modal : true, 
 // win.show() 
 // if autoShow == true.. on instantiation, will automatically be called 
 	

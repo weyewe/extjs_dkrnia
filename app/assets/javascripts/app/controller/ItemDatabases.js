@@ -39,7 +39,12 @@ Ext.define('AM.controller.ItemDatabases', {
       },
       'itemdatabaselist button[action=deleteObject]': {
         click: this.deleteObject
-      } 
+      },
+			'stockmigrationform form' : {
+				'item_quantity_changed' : function(){
+					this.getItemsStore().load();
+				}
+			}
 			
 		
     });

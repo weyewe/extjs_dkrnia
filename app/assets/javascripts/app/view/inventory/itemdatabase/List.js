@@ -8,7 +8,8 @@ Ext.define('AM.view.inventory.itemdatabase.List' ,{
 		this.columns = [
 			{ header: 'Nama',  dataIndex: 'name',  flex: 1 , sortable: false},
 			{ header: 'Supplier Code',  dataIndex: 'supplier_code',  flex: 1 , sortable: false},
-			{ header: 'Customer Code',  dataIndex: 'customer_code',  flex: 1 , sortable: false}
+			{ header: 'Customer Code',  dataIndex: 'customer_code',  flex: 1 , sortable: false},
+			{ header: 'Ready',  dataIndex: 'ready',  flex: 1 , sortable: false}
 		];
 
 		this.addObjectButton = new Ext.Button({

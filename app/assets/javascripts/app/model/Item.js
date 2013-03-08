@@ -8,7 +8,8 @@ Ext.define('AM.model.Item', {
 			'ready',
 			'pending_delivery',
 			'on_delivery',
-			'pending_receival'
+			'pending_receival',
+			{ name: 'ready', type: 'int' }
   	],
 
   	idProperty: 'id' ,proxy: {

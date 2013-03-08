@@ -80,7 +80,13 @@ Ext.define("AM.controller.Authorization", {
                         iconCls:'text' 
                     },
                     { 
-                        text:'Stock Adjustment', 
+                        text:'Pembelian', 
+                        viewClass:'Bravo', 
+                        leaf:true, 
+                        iconCls:'text' 
+                    },
+										{ 
+                        text:'Penerimaan', 
                         viewClass:'Bravo', 
                         leaf:true, 
                         iconCls:'text' 

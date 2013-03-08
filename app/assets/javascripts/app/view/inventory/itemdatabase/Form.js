@@ -6,6 +6,7 @@ Ext.define('AM.view.inventory.itemdatabase.Form', {
   layout: 'fit',
 	width	: 500,
   autoShow: true,  // does it need to be called?
+	modal : true, 
 // win.show() 
 // if autoShow == true.. on instantiation, will automatically be called 
 	
