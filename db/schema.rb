@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130308054953) do
+ActiveRecord::Schema.define(:version => 20130308095053) do
 
   create_table "companies", :force => true do |t|
     t.string   "name"
@@ -49,6 +49,18 @@ ActiveRecord::Schema.define(:version => 20130308054953) do
     t.boolean  "is_deleted",                                               :default => false
     t.datetime "created_at",                                                                  :null => false
     t.datetime "updated_at",                                                                  :null => false
+  end
+
+  create_table "purchase_orders", :force => true do |t|
+    t.integer  "creator_id"
+    t.integer  "vendor_id"
+    t.string   "code"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.boolean  "is_deleted",   :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "roles", :force => true do |t|
@@ -131,8 +143,16 @@ ActiveRecord::Schema.define(:version => 20130308054953) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "vendors", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "name"
+    t.string   "contact_person"
+    t.string   "phone"
+    t.string   "mobile"
+    t.string   "email"
+    t.string   "bbm_pin"
+    t.text     "address"
+    t.boolean  "is_deleted",     :default => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
 end

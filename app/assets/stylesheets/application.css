@@ -1,3 +1,10 @@
+.combo-name  {
+	font-weight : bold;
+	font-size : 11px;
+	background-color: #ffff99;
+}
 
-
-.x-grid-row-selected { background-color: black !important;}
+.combo-full-address { 
+	font-size : 11px;
+	color : #666666;
+}

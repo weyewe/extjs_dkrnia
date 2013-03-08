@@ -86,7 +86,7 @@ Ext.define("AM.controller.Authorization", {
                     },
                     { 
                         text:'Pembelian', 
-                        viewClass:'Bravo', 
+                        viewClass:'AM.view.inventory.PurchaseOrder', 
                         leaf:true, 
                         iconCls:'text' 
                     },

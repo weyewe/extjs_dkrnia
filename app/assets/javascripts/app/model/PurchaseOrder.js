@@ -1,22 +1,15 @@
-Ext.define('AM.model.Vendor', {
+Ext.define('AM.model.PurchaseOrder', {
   	extend: 'Ext.data.Model',
   	fields: [
     	{ name: 'id', type: 'int' },
-    	{ name: 'name', type: 'string' } ,
-			'phone',
-			'mobile',
-			'email',
-			'bbm_pin',
-			'address'
+    	{ name: 'code', type: 'string' } ,
+			{ name: 'vendor_id', type: 'int' },
+			{ name: 'vendor_name', type: 'string'},
+			{ name: 'is_confirmed',type: 'boolean', defaultValue: false } 
   	],
- 
-		
-		// vendor.purchase_orders() will return data store of model PurchaseOrder
 
 	 
 
-
-   
   	idProperty: 'id' ,proxy: {
 			url: 'api/purchase_orders',
 			type: 'rest',

@@ -14,6 +14,7 @@ gem 'the_role'
 
 gem "squeel" 
 gem 'acts_as_decimal'
+gem 'jbuilder'
 
 
 gem 'uuidtools'

@@ -37,3 +37,10 @@ coffee_maker.save
 janitor.role_id = janitor_role.id
 janitor.save 
 
+
+vendor_name_array = ["jimmy", "Mohan", "Sitorus", "Sitanggang", "Ando Smith", "Siburian", "benny", "Bernard",
+      "Monkey", "Tiger", "Lion", "jaune" , "mandarin", "Zhong", "Superman", "Shinta", "Hardy", "Shinto"]
+
+vendor_name_array.each do |x|
+  Vendor.create :name => x
+end
