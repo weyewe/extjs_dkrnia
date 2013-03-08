@@ -52,7 +52,7 @@ class Api::EmployeesController < Api::BaseApiController
     @object = Employee.find(params[:id])
     @object.delete(current_user)
 
-    if self.is_deleted
+    if @object.is_deleted
       render :json => { :success => true, :total => Employee.active_objects.count }  
     else
       render :json => { :success => false, :total => Employee.active_objects.count }  

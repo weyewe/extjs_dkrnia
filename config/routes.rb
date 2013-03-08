@@ -11,8 +11,7 @@ ExtjsDikarunia::Application.routes.draw do
     resources :employees
     resources :app_users 
     resources :items 
-    
-    
+    resources :stock_migrations 
   end
 
 end

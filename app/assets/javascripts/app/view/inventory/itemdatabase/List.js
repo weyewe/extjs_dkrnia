@@ -7,8 +7,9 @@ Ext.define('AM.view.inventory.itemdatabase.List' ,{
 
 	initComponent: function() {
 		this.columns = [
-			{ header: 'ID', dataIndex: 'id'},
-			{ header: ' Name',  dataIndex: 'name',  flex: 1 , sortable: false} 
+			{ header: 'Nama',  dataIndex: 'name',  flex: 1 , sortable: false},
+			{ header: 'Supplier Code',  dataIndex: 'supplier_code',  flex: 1 , sortable: false},
+			{ header: 'Customer Code',  dataIndex: 'customer_code',  flex: 1 , sortable: false}
 		];
 
 		this.addObjectButton = new Ext.Button({
@@ -27,6 +28,7 @@ Ext.define('AM.view.inventory.itemdatabase.List' ,{
 			action: 'deleteObject',
 			disabled: true
 		});
+ 
 
 
 

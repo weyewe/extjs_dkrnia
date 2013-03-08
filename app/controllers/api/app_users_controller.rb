@@ -51,7 +51,7 @@ class Api::AppUsersController < Api::BaseApiController
     @object = User.find(params[:id])
     @object.delete(current_user)
 
-    if self.is_deleted
+    if @object.is_deleted
       render :json => { :success => true, :total => User.active_objects.count }  
     else
       render :json => { :success => false, :total => User.active_objects.count }  

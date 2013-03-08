@@ -9,7 +9,7 @@ class Item < ActiveRecord::Base
   has_many :purchase_order_entries 
   has_many :purchase_receival_entries 
    
-  validates_presence_of :name , :item_category_id , :supplier_code, :customer_code
+  validates_presence_of :name ,  :supplier_code, :customer_code #  , :item_category_id ,
   
   validate :unique_non_deleted_name
   
@@ -33,9 +33,11 @@ class Item < ActiveRecord::Base
     
     new_object = Item.new  
     
+    # base_category = ItemCategory.first 
+    
     new_object.creator_id                = employee.id 
     new_object.name                      = object_params[:name] 
-    new_object.item_category_id          = object_params[:item_category_id]   
+    # new_object.item_category_id          = base_category.id # object_params[:item_category_id]   
     new_object.supplier_code = object_params[:supplier_code]
     new_object.customer_code = object_params[:customer_code]
 
@@ -46,9 +48,10 @@ class Item < ActiveRecord::Base
   def  update_by_employee(  employee,   object_params)  
     return nil if employee.nil? 
     
+    # base_category = ItemCategory.first 
     self.creator_id                = employee.id 
     self.name                      = object_params[:name] 
-    self.item_category_id          = object_params[:item_category_id]   
+    # self.item_category_id          = base_category.id 
     self.supplier_code = object_params[:supplier_code]
     self.customer_code = object_params[:customer_code]
     self.save 
