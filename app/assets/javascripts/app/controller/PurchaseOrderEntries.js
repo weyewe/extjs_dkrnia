@@ -1,77 +1,92 @@
-Ext.define('AM.controller.ItemDatabases', {
+Ext.define('AM.controller.PurchaseOrderEntries', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Items'],
-  models: ['Item'],
+  stores: ['PurchaseOrderEntries', 'PurchaseOrders'],
+  models: ['PurchaseOrderEntry'],
 
   views: [
-    'inventory.itemdatabase.List',
-    'inventory.itemdatabase.Form',
-		'inventory.stockmigration.List',
+    'inventory.purchaseorderentry.List',
+    'inventory.purchaseorderentry.Form',
+		'inventory.purchaseorder.List'
   ],
 
   refs: [
 		{
 			ref: 'list',
-			selector: 'itemdatabaselist'
+			selector: 'purchaseorderentrylist'
 		},
 		{
-			ref : 'stockMigrationList',
-			selector : 'stockmigrationlist'
+			ref : 'parentList',
+			selector : 'purchaseorderlist'
 		}
 	],
 
   init: function() {
     this.control({
-      'itemdatabaselist': {
+      'purchaseorderentrylist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange,
-				afterrender : this.loadObjectList,
+        selectionchange: this.selectionChange 
       },
-      'itemdatabaseform button[action=save]': {
+      'purchaseorderentryform button[action=save]': {
         click: this.updateObject
       },
-      'itemdatabaselist button[action=addObject]': {
+      'purchaseorderentrylist button[action=addObject]': {
         click: this.addObject
       },
-      'itemdatabaselist button[action=editObject]': {
+      'purchaseorderentrylist button[action=editObject]': {
         click: this.editObject
       },
-      'itemdatabaselist button[action=deleteObject]': {
+      'purchaseorderentrylist button[action=deleteObject]': {
         click: this.deleteObject
       },
-			'stockmigrationform form' : {
-				'item_quantity_changed' : function(){
-					this.getItemsStore().load();
-				}
+
+			// monitor purchase order update
+			'purchaseorderlist' : {
+				'updated' : this.reloadStore,
+				'confirmed' : this.reloadStore,
+				'deleted' : this.reloadStore
 			}
-			
 		
     });
   },
+
+	reloadStore : function(parent_id){
+		this.getPurchaseOrderEntriesStore().load({
+			params : {
+				purchase_order_id : parent_id
+			}
+		});
+	},
  
 
-	loadObjectList : function(me){
-		me.getStore().load();
-	},
-
   addObject: function() {
-    var view = Ext.widget('itemdatabaseform');
-    view.show();
+		
+		// I want to get the currently selected item 
+		var record = this.getParentList().getSelectedObject();
+		if(!record){
+			return; 
+		}
+		 
+    var view = Ext.widget('purchaseorderentryform');
+		view.setParentData( record );
+    view.show(); 
   },
 
   editObject: function() {
+		var parentRecord = this.getParentList().getSelectedObject();
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('itemdatabaseform');
+    var view = Ext.widget('purchaseorderentryform');
 
     view.down('form').loadRecord(record);
+		view.setParentData( parentRecord );
   },
 
   updateObject: function(button) {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getItemsStore();
+		var parentRecord = this.getParentList().getSelectedObject();
+    var store = this.getPurchaseOrderEntriesStore();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -81,10 +96,20 @@ Ext.define('AM.controller.ItemDatabases', {
 			 
 			form.setLoading(true);
 			record.save({
+				params : {
+					purchase_order_id : parentRecord.get('id')
+				},
 				success : function(record){
+					console.log("successfully loaded the shite in stock migration");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					// form.fireEvent('item_quantity_changed');
+					store.load({
+						params: {
+							purchase_order_id : parentRecord.get('id')
+						}
+					});
+					
 					win.close();
 				},
 				failure : function(record,op ){
@@ -99,16 +124,24 @@ Ext.define('AM.controller.ItemDatabases', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Item( values ) ;
+			var newObject = new AM.model.PurchaseOrderEntry( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
 			// form.mask("Loading....."); 
 			form.setLoading(true);
 			newObject.save({
+				params : {
+					purchase_order_id : parentRecord.get('id')
+				},
 				success: function(record){
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					store.load({
+						params: {
+							purchase_order_id : parentRecord.get('id')
+						}
+					});
+					// form.fireEvent('item_quantity_changed');
 					form.setLoading(false);
 					win.close();
 					
@@ -127,47 +160,23 @@ Ext.define('AM.controller.ItemDatabases', {
     var record = this.getList().getSelectedObject();
 
     if (record) {
-      var store = this.getItemsStore();
+      var store = this.getPurchaseOrderEntriesStore();
       store.remove(record);
       store.sync();
-// to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+			this.getList().query('pagingtoolbar')[0].doRefresh();
     }
-
   },
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
-		var record = this.getList().getSelectedObject();
-		
-		if(!record){
-			return; 
-		}
-		var stockMigrationGrid = this.getStockMigrationList();
-		stockMigrationGrid.setTitle("StockMigration: " + record.get('name'));
-		stockMigrationGrid.getStore().load({
-			params : {
-				item_id : record.get('id')
-			},
-			callback : function(records, options, success){
-				
-				var totalObject  = records.length;
-				if( totalObject ===  0 ){
-					stockMigrationGrid.enableAddButton(); 
-				}else{
-					stockMigrationGrid.disableAddButton(); 
-				}
-			}
-		});
+
+		// var record = this.getList().getSelectedObject();
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-
-		// load the stock migration
-		// load the stock adjustment 
   }
 
 });

@@ -6,14 +6,19 @@ Ext.define('AM.controller.PurchaseOrders', {
 
   views: [
     'inventory.purchaseorder.List',
-    'inventory.purchaseorder.Form'
+    'inventory.purchaseorder.Form',
+		'inventory.purchaseorderentry.List'
   ],
 
-  	refs: [
+  refs: [
 		{
 			ref: 'list',
 			selector: 'purchaseorderlist'
-		} 
+		},
+		{
+			ref : 'purchaseOrderEntryList',
+			selector : 'purchaseorderentrylist'
+		}
 	],
 
   init: function() {
@@ -34,8 +39,7 @@ Ext.define('AM.controller.PurchaseOrders', {
       },
       'purchaseorderlist button[action=deleteObject]': {
         click: this.deleteObject
-      } 
-		
+      }
     });
   },
  
@@ -61,6 +65,7 @@ Ext.define('AM.controller.PurchaseOrders', {
     var form = win.down('form');
 
     var store = this.getPurchaseOrdersStore();
+		var list = this.getList();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -75,6 +80,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					win.close();
+					list.fireEvent('updated', record.get("id"));
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
@@ -100,6 +106,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 					store.load();
 					form.setLoading(false);
 					win.close();
+					list.fireEvent('updated');
 					
 				},
 				failure: function( record, op){
@@ -114,25 +121,50 @@ Ext.define('AM.controller.PurchaseOrders', {
 
   deleteObject: function() {
     var record = this.getList().getSelectedObject();
+		var list  = this.getList();
 
     if (record) {
       var store = this.getPurchaseOrdersStore();
       store.remove(record);
       store.sync();
 // to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+			list.fireEvent('deleted');	
+			this.getList().query('pagingtoolbar')[0].doRefresh();
     }
 
   },
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
+		var record = this.getList().getSelectedObject();
+		
+		if(!record){
+			return; 
+		}
+		var purchaseOrderEntryGrid = this.getPurchaseOrderEntryList();
+		purchaseOrderEntryGrid.setTitle("Purchase Order: " + record.get('code'));
+		purchaseOrderEntryGrid.getStore().load({
+			params : {
+				purchase_order_id : record.get('id')
+			},
+			callback : function(records, options, success){
+				
+				var totalObject  = records.length;
+				if( totalObject ===  0 ){
+					purchaseOrderEntryGrid.enableRecordButtons(); 
+				}else{
+					purchaseOrderEntryGrid.enableRecordButtons(); 
+				}
+			}
+		});
+		
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-  }
+  } 
+	
 
 });

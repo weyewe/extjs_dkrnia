@@ -57,4 +57,18 @@ class Api::ItemsController < Api::BaseApiController
       render :json => { :success => false, :total => Item.active_objects.count }  
     end
   end
+  
+  def search
+    search_params = params[:query]
+    query = '%' + search_params + '%'
+    # on PostGre SQL, it is ignoring lower case or upper case 
+    
+    @objects = Item.where{ (name =~ query)  & (is_deleted.eq false) }.
+                      page(params[:page]).
+                      per(params[:limit]).
+                      order("id DESC")
+    
+    
+    render :json => { :records => @objects , :total => @objects.count, :success => true }
+  end
 end

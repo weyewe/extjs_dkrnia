@@ -8,6 +8,7 @@ ExtjsDikarunia::Application.routes.draw do
     match 'update_password' => "passwords#update" , :as => :update_password, :method => :put
     
     match 'search_vendor' => 'vendors#search', :as => :search_vendor, :method => :get
+    match 'search_item' => 'items#search', :as => :search_items, :method => :get
     
     resources :employees
     resources :vendors
