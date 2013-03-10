@@ -20,6 +20,10 @@ ExtjsDikarunia::Application.routes.draw do
     resources :purchase_orders
     match 'confirm_purchase_order' => 'purchase_orders#confirm' , :as => :confirm_purchase_order, :method => :post 
     resources :purchase_order_entries 
+    
+    resources :purchase_receivals
+    match 'confirm_purchase_receival' => 'purchase_receivals#confirm', :as => :confirm_purchase_receival, :method => :post 
+    resources :purchase_receival_entries
   end
 
 end

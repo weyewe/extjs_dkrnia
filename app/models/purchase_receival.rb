@@ -10,8 +10,10 @@ class PurchaseReceival < ActiveRecord::Base
    
    
   def self.active_objects
-    self.where(:is_deleted => false ).order("created_at DESC")
+    self.where(:is_deleted => false ).order("id DESC")
   end
+  
+
   
   def delete(employee) 
     return nil if employee.nil? 
@@ -49,7 +51,7 @@ class PurchaseReceival < ActiveRecord::Base
   
   
   def active_purchase_receival_entries 
-    self.purchase_receival_entries.where(:is_deleted => false ).order("created_at DESC")
+    self.purchase_receival_entries.where(:is_deleted => false ).order("id DESC")
   end
   
   def update_by_employee( employee, params ) 

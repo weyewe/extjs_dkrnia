@@ -1,54 +1,88 @@
-Ext.define('AM.controller.ItemDatabases', {
+Ext.define('AM.controller.PurchaseReceivals', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Items'],
-  models: ['Item'],
+  stores: ['PurchaseReceivals'],
+  models: ['PurchaseReceival'],
 
   views: [
-    'inventory.itemdatabase.List',
-    'inventory.itemdatabase.Form',
-		'inventory.stockmigration.List',
+    'inventory.purchasereceival.List',
+    'inventory.purchasereceival.Form'// ,
+    // 		'inventory.purchasereceivalentry.List'
   ],
 
   refs: [
 		{
 			ref: 'list',
-			selector: 'itemdatabaselist'
+			selector: 'purchasereceivallist'
 		},
 		{
-			ref : 'stockMigrationList',
-			selector : 'stockmigrationlist'
+			ref : 'purchaseReceivalEntryList',
+			selector : 'purchasereceivalentrylist'
+		},
+		{
+			ref: 'viewport',
+			selector: 'vp'
 		}
 	],
 
   init: function() {
     this.control({
-      'itemdatabaselist': {
+      'purchasereceivallist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
 				afterrender : this.loadObjectList,
       },
-      'itemdatabaseform button[action=save]': {
+      'purchasereceivalform button[action=save]': {
         click: this.updateObject
       },
-      'itemdatabaselist button[action=addObject]': {
+      'purchasereceivallist button[action=addObject]': {
         click: this.addObject
       },
-      'itemdatabaselist button[action=editObject]': {
+      'purchasereceivallist button[action=editObject]': {
         click: this.editObject
       },
-      'itemdatabaselist button[action=deleteObject]': {
+      'purchasereceivallist button[action=deleteObject]': {
         click: this.deleteObject
       },
-			'stockmigrationform form' : {
-				'item_quantity_changed' : function(){
-					this.getItemsStore().load();
-				}
-			}
-			
-		
+			'purchasereceivallist button[action=confirmObject]': {
+        click: this.confirmObject
+      },
+
+
     });
   },
+
+	confirmObject: function(){
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		if(!record){return;}
+		
+		Ext.Ajax.request({
+		    url: 'api/confirm_purchase_receival',
+		    method: 'POST',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								list.fireEvent('confirmed', record);
+							}
+						});
+						
+		    },
+		    failure: function(result, request ) {
+						me.getViewport().setLoading( false ) ;
+		    }
+		});
+	},
+
+
  
 
 	loadObjectList : function(me){
@@ -56,13 +90,14 @@ Ext.define('AM.controller.ItemDatabases', {
 	},
 
   addObject: function() {
-    var view = Ext.widget('itemdatabaseform');
+    var view = Ext.widget('purchasereceivalform');
     view.show();
   },
 
   editObject: function() {
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('itemdatabaseform');
+		if(!record){return;}
+    var view = Ext.widget('purchasereceivalform');
 
     view.down('form').loadRecord(record);
   },
@@ -71,7 +106,8 @@ Ext.define('AM.controller.ItemDatabases', {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getItemsStore();
+    var store = this.getPurchaseReceivalsStore();
+		var list = this.getList();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -86,6 +122,7 @@ Ext.define('AM.controller.ItemDatabases', {
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					win.close();
+					list.fireEvent('updated', record );
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
@@ -99,7 +136,7 @@ Ext.define('AM.controller.ItemDatabases', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Item( values ) ;
+			var newObject = new AM.model.PurchaseReceival( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
@@ -111,6 +148,7 @@ Ext.define('AM.controller.ItemDatabases', {
 					store.load();
 					form.setLoading(false);
 					win.close();
+					list.fireEvent('updated', record);
 					
 				},
 				failure: function( record, op){
@@ -125,13 +163,21 @@ Ext.define('AM.controller.ItemDatabases', {
 
   deleteObject: function() {
     var record = this.getList().getSelectedObject();
-
+		if(!record){return;}
+		var list  = this.getList();
+		list.setLoading(true); 
+		
     if (record) {
-      var store = this.getItemsStore();
-      store.remove(record);
-      store.sync();
-// to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+			record.destroy({
+				success : function(record){
+					list.setLoading(false);
+					list.fireEvent('deleted');	
+					list.getStore().load();
+				},
+				failure : function(record,op ){
+					list.setLoading(false);
+				}
+			});
     }
 
   },
@@ -143,30 +189,31 @@ Ext.define('AM.controller.ItemDatabases', {
 		if(!record){
 			return; 
 		}
-		var stockMigrationGrid = this.getStockMigrationList();
-		stockMigrationGrid.setTitle("StockMigration: " + record.get('name'));
-		stockMigrationGrid.getStore().load({
+		var purchaseReceivalEntryGrid = this.getPurchaseReceivalEntryList();
+		// purchaseReceivalEntryGrid.setTitle("Purchase Receival: " + record.get('code'));
+		purchaseReceivalEntryGrid.setObjectTitle( record ) ;
+		purchaseReceivalEntryGrid.getStore().load({
 			params : {
-				item_id : record.get('id')
+				purchase_receival_id : record.get('id')
 			},
 			callback : function(records, options, success){
+				
 				var totalObject  = records.length;
 				if( totalObject ===  0 ){
-					stockMigrationGrid.enableAddButton(); 
+					purchaseReceivalEntryGrid.enableRecordButtons(); 
 				}else{
-					stockMigrationGrid.disableAddButton(); 
+					purchaseReceivalEntryGrid.enableRecordButtons(); 
 				}
 			}
 		});
+		
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-
-		// load the stock migration
-		// load the stock adjustment 
-  }
+  } 
+	
 
 });

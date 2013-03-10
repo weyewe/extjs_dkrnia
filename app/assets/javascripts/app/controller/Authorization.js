@@ -92,7 +92,7 @@ Ext.define("AM.controller.Authorization", {
                     },
 										{ 
                         text:'Penerimaan', 
-                        viewClass:'Bravo', 
+                        viewClass:'AM.view.inventory.PurchaseReceival', 
                         leaf:true, 
                         iconCls:'text' 
                     }

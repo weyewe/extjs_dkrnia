@@ -5,6 +5,7 @@ Ext.Loader.setConfig({
 });
 
 Ext.application({
+	
 	<% Dir[File.expand_path('../app/*/', __FILE__)].each do |subdir| %>
 		<%= File.basename(subdir) %>s: <%=
 		# omit all file extensions (js, js.erb, etc.) from the file name
