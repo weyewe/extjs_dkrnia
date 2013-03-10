@@ -58,6 +58,8 @@ Ext.define('AM.controller.PurchaseOrders', {
 		var list = this.getList();
 		me.getViewport().setLoading( true ) ;
 		
+		if(!record){return;}
+		
 		Ext.Ajax.request({
 		    url: 'api/confirm_purchase_order',
 		    method: 'POST',
@@ -69,8 +71,6 @@ Ext.define('AM.controller.PurchaseOrders', {
 						me.getViewport().setLoading( false );
 						list.getStore().load({
 							callback : function(records, options, success){
-								
-								record = list.getStore().getById( record.get('id'));
 								list.fireEvent('confirmed', record);
 							}
 						});
@@ -96,6 +96,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 
   editObject: function() {
     var record = this.getList().getSelectedObject();
+		if(!record){return;}
     var view = Ext.widget('purchaseorderform');
 
     view.down('form').loadRecord(record);
@@ -162,6 +163,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 
   deleteObject: function() {
     var record = this.getList().getSelectedObject();
+		if(!record){return;}
 		var list  = this.getList();
 		list.setLoading(true); 
 		

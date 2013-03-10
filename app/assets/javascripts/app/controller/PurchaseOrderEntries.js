@@ -68,7 +68,8 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 		var store = this.getPurchaseOrderEntriesStore();
 		
 		list.setTitle('');
-		store.remove(); 
+		// store.removeAll(); 
+		store.loadRecords([], {addRecords: false});
 	},
  
 
@@ -87,7 +88,12 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 
   editObject: function() {
 		var parentRecord = this.getParentList().getSelectedObject();
+		
     var record = this.getList().getSelectedObject();
+		if(!record || !parentRecord){
+			return; 
+		}
+
     var view = Ext.widget('purchaseorderentryform');
 
     view.down('form').loadRecord(record);

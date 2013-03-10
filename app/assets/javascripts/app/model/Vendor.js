@@ -18,19 +18,19 @@ Ext.define('AM.model.Vendor', {
 
    
   	idProperty: 'id' ,proxy: {
-			url: 'api/purchase_orders',
+			url: 'api/vendors',
 			type: 'rest',
 			format: 'json',
 
 			reader: {
-				root: 'purchase_orders',
+				root: 'vendors',
 				successProperty: 'success',
 				totalProperty : 'total'
 			},
 
 			writer: {
 				getRecordData: function(record) {
-					return { purchase_order : record.data };
+					return { vendor : record.data };
 				}
 			}
 		}
