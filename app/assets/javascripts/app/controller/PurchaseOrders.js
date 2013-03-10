@@ -18,6 +18,10 @@ Ext.define('AM.controller.PurchaseOrders', {
 		{
 			ref : 'purchaseOrderEntryList',
 			selector : 'purchaseorderentrylist'
+		},
+		{
+			ref: 'viewport',
+			selector: 'vp'
 		}
 	],
 
@@ -39,9 +43,46 @@ Ext.define('AM.controller.PurchaseOrders', {
       },
       'purchaseorderlist button[action=deleteObject]': {
         click: this.deleteObject
-      }
+      },
+			'purchaseorderlist button[action=confirmObject]': {
+        click: this.confirmObject
+      },
+
+
     });
   },
+
+	confirmObject: function(){
+		var me  = this;
+		var record = this.getList().getSelectedObject();
+		var list = this.getList();
+		me.getViewport().setLoading( true ) ;
+		
+		Ext.Ajax.request({
+		    url: 'api/confirm_purchase_order',
+		    method: 'POST',
+		    params: {
+					id : record.get('id')
+		    },
+		    jsonData: {},
+		    success: function(result, request ) {
+						me.getViewport().setLoading( false );
+						list.getStore().load({
+							callback : function(records, options, success){
+								
+								record = list.getStore().getById( record.get('id'));
+								list.fireEvent('confirmed', record);
+							}
+						});
+						
+		    },
+		    failure: function(result, request ) {
+						me.getViewport().setLoading( false ) ;
+		    }
+		});
+	},
+
+
  
 
 	loadObjectList : function(me){

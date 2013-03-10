@@ -58,4 +58,16 @@ class Api::PurchaseOrdersController < Api::BaseApiController
       render :json => { :success => false, :total => PurchaseOrder.active_objects.count }  
     end
   end
+  
+  def confirm
+    @object = PurchaseOrder.find_by_id params[:id]
+    # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
+    @object.confirm( current_user  )  
+    
+    if @object.is_confirmed? 
+      render :json => { :success => true, :total => PurchaseOrder.active_objects.count }  
+    else
+      render :json => { :success => false, :total => PurchaseOrder.active_objects.count }  
+    end
+  end
 end

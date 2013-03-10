@@ -18,6 +18,7 @@ ExtjsDikarunia::Application.routes.draw do
     resources :stock_migrations 
     
     resources :purchase_orders
+    match 'confirm_purchase_order' => 'purchase_orders#confirm' , :as => :confirm_purchase_order, :method => :post 
     resources :purchase_order_entries 
   end
 
