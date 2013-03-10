@@ -62,5 +62,9 @@ Ext.define('AM.view.inventory.purchaseorderentry.List' ,{
 		this.addObjectButton.disable();
 		this.editObjectButton.disable();
 		this.deleteObjectButton.disable();
-	} 
+	},
+	
+	setObjectTitle : function(record){
+		this.setTitle("Purchase Orders: " + record.get("code"));
+	}
 });

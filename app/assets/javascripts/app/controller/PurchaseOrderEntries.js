@@ -40,22 +40,35 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
         click: this.deleteObject
       },
 
-			// monitor purchase order update
+			// monitor parent(purchase_order) update
 			'purchaseorderlist' : {
 				'updated' : this.reloadStore,
 				'confirmed' : this.reloadStore,
-				'deleted' : this.reloadStore
+				'deleted' : this.cleanList
 			}
 		
     });
   },
 
-	reloadStore : function(parent_id){
-		this.getPurchaseOrderEntriesStore().load({
+	reloadStore : function(record){
+		var list = this.getList();
+		var store = this.getPurchaseOrderEntriesStore();
+		
+		store.load({
 			params : {
-				purchase_order_id : parent_id
+				purchase_order_id : record.get('id')
 			}
 		});
+		
+		list.setObjectTitle(record);
+	},
+	
+	cleanList : function(){
+		var list = this.getList();
+		var store = this.getPurchaseOrderEntriesStore();
+		
+		list.setTitle('');
+		store.remove(); 
 	},
  
 

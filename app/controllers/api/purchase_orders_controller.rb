@@ -52,7 +52,7 @@ class Api::PurchaseOrdersController < Api::BaseApiController
     @object = PurchaseOrder.find(params[:id])
     @object.delete(current_user)
 
-    if @object.is_deleted
+    if ( @object.is_confirmed? and @object.is_deleted) or (  not @object.is_confirmed? and not @object.persisted?)  
       render :json => { :success => true, :total => PurchaseOrder.active_objects.count }  
     else
       render :json => { :success => false, :total => PurchaseOrder.active_objects.count }  

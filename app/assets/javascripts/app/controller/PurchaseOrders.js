@@ -80,7 +80,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 					//  since the grid is backed by store, if store changes, it will be updated
 					store.load();
 					win.close();
-					list.fireEvent('updated', record.get("id"));
+					list.fireEvent('updated', record );
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
@@ -106,7 +106,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 					store.load();
 					form.setLoading(false);
 					win.close();
-					list.fireEvent('updated');
+					list.fireEvent('updated', record);
 					
 				},
 				failure: function( record, op){
@@ -122,14 +122,23 @@ Ext.define('AM.controller.PurchaseOrders', {
   deleteObject: function() {
     var record = this.getList().getSelectedObject();
 		var list  = this.getList();
-
+		list.setLoading(true); 
+		
     if (record) {
-      var store = this.getPurchaseOrdersStore();
-      store.remove(record);
-      store.sync();
-// to do refresh programmatically
-			list.fireEvent('deleted');	
-			this.getList().query('pagingtoolbar')[0].doRefresh();
+			record.destroy({
+				success : function(record){
+					console.log("Succesfully destroyed the purchase order");
+					list.setLoading(false);
+					list.fireEvent('deleted');	
+					// this.getList().query('pagingtoolbar')[0].doRefresh();
+					// console.log("Gonna reload the shite");
+					// this.getPurchaseOrdersStore.load();
+					list.getStore().load();
+				},
+				failure : function(record,op ){
+					list.setLoading(false);
+				}
+			});
     }
 
   },
@@ -142,7 +151,8 @@ Ext.define('AM.controller.PurchaseOrders', {
 			return; 
 		}
 		var purchaseOrderEntryGrid = this.getPurchaseOrderEntryList();
-		purchaseOrderEntryGrid.setTitle("Purchase Order: " + record.get('code'));
+		// purchaseOrderEntryGrid.setTitle("Purchase Order: " + record.get('code'));
+		purchaseOrderEntryGrid.setObjectTitle( record ) ;
 		purchaseOrderEntryGrid.getStore().load({
 			params : {
 				purchase_order_id : record.get('id')
