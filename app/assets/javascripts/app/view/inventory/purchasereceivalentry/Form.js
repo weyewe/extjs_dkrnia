@@ -17,6 +17,9 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 			proxy  	: {
 				type : 'ajax',
 				url : 'api/search_purchase_order_entry',
+				// baseParams:{
+				// 	action: 'mgr/contacts/groupslist'
+				// },  // try to put vendor id over there: only display the pending receival from a given vendor
 				reader : {
 					type : 'json',
 					root : 'records', 
@@ -38,16 +41,16 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 				
 				{
 					xtype: 'displayfield',
-					fieldLabel: 'Purchase Order',
-					name: 'purchase_order_code',
+					fieldLabel: 'Purchase Receival',
+					name: 'purchase_receival_code',
 					value: '10'
 				},
 				{
-					fieldLabel: 'Item',
+					fieldLabel: 'Purchase Order Entry',
 					xtype: 'combo',
 					queryMode: 'remote',
 					forceSelection: true, 
-					displayField : 'name',
+					displayField : 'item_name',
 					valueField : 'id',
 					pageSize : 5,
 					minChars : 1, 
@@ -55,14 +58,14 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 					store : remoteJsonStore, 
 					listConfig : {
 						getInnerTpl: function(){
-							return '<div data-qtip="{name}">' + 
-							'<div class="combo-name">{name}</div>' + 
-							'<div class="combo-full-address">{customer_code}</div>' + 
-							'<div class="combo-full-address">{supplier_code}</div>' + 
+							return '<div data-qtip="{item_name}">' + 
+							'<div class="combo-name">{item_name}</div>' + 
+							'<div class="combo-full-address">{purchase_order_entry_code}</div>' + 
+							'<div class="combo-full-address">{purchase_order_code}</div>' + 
 							'</div>';
 						}
 					},
-					name : 'item_id'
+					name : 'purchase_order_entry_id'
 				},
 				{
 	        xtype: 'textfield',
@@ -84,10 +87,10 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
     this.callParent(arguments);
   },
 
-
+	
+	// we pass the parent_record 
 	setParentData: function( record ){
-		this.down('form').getForm().findField('purchase_order_code').setValue(record.get('code')); 
-		this.down('form').getForm().findField('item_id').setValue(record.get('item_id')); 
+		this.down('form').getForm().findField('purchase_receival_code').setValue(record.get('code')); 
 	}
 });
 

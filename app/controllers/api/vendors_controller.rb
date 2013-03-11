@@ -61,14 +61,30 @@ class Api::VendorsController < Api::BaseApiController
   
   def search
     search_params = params[:query]
+    selected_id = params[:selected_id]
+    if params[:selected_id].nil?  or params[:selected_id].length == 0 
+      selected_id = nil
+    end
     
-    query = '%' + search_params + '%'
+    # query = '%' + search_params + '%'
+    query = "%#{search_params}%"
     # on PostGre SQL, it is ignoring lower case or upper case 
     
-    @objects = Vendor.where{ (name =~ query)  & (is_deleted.eq false) }.
-                      page(params[:page]).
-                      per(params[:limit]).
-                      order("id DESC")
+    if  selected_id.nil?
+      @objects = Vendor.where{ (name =~ query)   & 
+                                (is_deleted.eq false )
+                              }.
+                        page(params[:page]).
+                        per(params[:limit]).
+                        order("id DESC")
+    else
+      @objects = Vendor.where{ (id.eq selected_id)  & 
+                                (is_deleted.eq false )
+                              }.
+                        page(params[:page]).
+                        per(params[:limit]).
+                        order("id DESC")
+    end
     
     
     render :json => { :records => @objects , :total => @objects.count, :success => true }

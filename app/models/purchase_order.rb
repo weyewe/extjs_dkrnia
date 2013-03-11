@@ -6,6 +6,13 @@ class PurchaseOrder < ActiveRecord::Base
   
   belongs_to :vendor 
   
+  validate :valid_vendor
+  
+  def valid_vendor
+    if self.vendor.nil?
+      errors.add(:vendor_id, "Harus diisi")
+    end
+  end
    
    
   def self.active_objects

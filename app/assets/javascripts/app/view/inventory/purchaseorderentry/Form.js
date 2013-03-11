@@ -87,7 +87,6 @@ Ext.define('AM.view.inventory.purchaseorderentry.Form', {
 
 	setParentData: function( record ){
 		this.down('form').getForm().findField('purchase_order_code').setValue(record.get('code')); 
-		this.down('form').getForm().findField('item_id').setValue(record.get('item_id')); 
 	}
 });
 

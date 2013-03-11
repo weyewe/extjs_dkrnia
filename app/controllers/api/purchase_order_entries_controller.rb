@@ -2,7 +2,7 @@ class Api::PurchaseOrderEntriesController < Api::BaseApiController
   
   def index
     @parent = PurchaseOrder.find_by_id params[:purchase_order_id]
-    @objects = @parent.active_purchase_order_entries.joins(:purchase_order_entry => [:purchase_order, :item]).
+    @objects = @parent.active_purchase_order_entries.joins(:purchase_order, :item).
                     page(params[:page]).
                     per(params[:limit]).order("id DESC")
                     

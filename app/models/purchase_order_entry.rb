@@ -16,6 +16,7 @@ class PurchaseOrderEntry < ActiveRecord::Base
   validates_presence_of :quantity  
   
   validate :valid_item
+
   validate :entry_uniqueness 
   validate :quantity_must_not_less_than_zero 
   

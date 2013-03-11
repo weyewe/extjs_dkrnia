@@ -98,8 +98,13 @@ Ext.define('AM.controller.PurchaseOrders', {
     var record = this.getList().getSelectedObject();
 		if(!record){return;}
     var view = Ext.widget('purchaseorderform');
-
+		console.log("gonna load record for purchase ordesr");
+		console.log("The vendor_id: " + record.get("vendor_id"));
+		console.log("THe vendor_name: " + record.get("vendor_name"));
+		
+		console.log("^^^^^^^^^^^^^^^^^^ in the controller, gonna loadRecord");
     view.down('form').loadRecord(record);
+		console.log("&&&&&&&&&&&& in the controller, post loadRecord")
   },
 
   updateObject: function(button) {
@@ -110,6 +115,9 @@ Ext.define('AM.controller.PurchaseOrders', {
 		var list = this.getList();
     var record = form.getRecord();
     var values = form.getValues();
+
+		 
+		
 
 		
 		if( record ){

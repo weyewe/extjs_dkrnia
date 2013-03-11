@@ -12,7 +12,17 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
 	
 		var remoteJsonStore = Ext.create(Ext.data.JsonStore, {
 			storeId : 'vendor_search',
-			fields	: ['id','name'],
+			fields	: [
+				{
+					name : 'vendor_id',
+					mapping : "id"
+				},
+				{
+					name : 'vendor_name',
+					mapping : 'name'
+				}
+					// 'id','name'
+			],
 			proxy  	: {
 				type : 'ajax',
 				url : 'api/search_vendor',
@@ -21,7 +31,8 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
 					root : 'records', 
 					totalProperty  : 'total'
 				}
-			}
+			},
+			autoLoad : false 
 		});
 	
     this.items = [{
@@ -40,26 +51,46 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
 	        fieldLabel: 'id'
 	      },
 				{
-					name : 'vendor_id',
 					fieldLabel: ' Vendor ',
 					xtype: 'combo',
 					queryMode: 'remote',
 					forceSelection: true, 
-					displayField : 'name',
-					valueField : 'id',
+					displayField : 'vendor_name',
+					valueField : 'vendor_id',
 					pageSize : 5,
 					minChars : 1, 
+					allowBlank : false, 
 					triggerAction: 'all',
 					store : remoteJsonStore, 
 					listConfig : {
 						getInnerTpl: function(){
-							return '<div data-qtip="{name}">' + 
-							'<div class="combo-name">{name}</div>' + 
+							return '<div data-qtip="{vendor_name}">' + 
+							'<div class="combo-name">{vendor_name}</div>' + 
 							'<div class="combo-full-address">{address}</div>' + 
 							'<div class="combo-full-adderss">{city}  {state} {zip}</div>' + 
 							'</div>';
 						}
-					}
+					},
+					// getDisplayValue : function(){
+					// 	console.log("INside the combobox getDisplayValue");
+					// 	console.log( this ) ;
+					// 	// var form = this.up('form');
+					// 	// var record = form.getRecord();
+					// 	// var record = this.up("form").getForm().getRecord();
+					// 	// if(record){
+					// 	// 	return record.get("vendor_name");
+					// 	// }else{
+					// 	// 	return "";
+					// 	// }
+					// 	// if(record){
+					// 	// 	console.log("666666666 Willy is awesome!");
+					// 	// }
+					// 	return "";
+					// 	
+					// },
+					name : 'vendor_id'// ,
+					// 					value : 'this man is awesome',
+					// 					emptyText : "Vendor baby"
 
 				}
 			]
@@ -75,6 +106,11 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
     }];
 
     this.callParent(arguments);
-  }
+  },
+
+	setComboBoxData : function( record){
+		this.down('form').getForm().findField('vendor_id').setValue(record.get('vendor_id')); 
+		// this.down('form').getForm().findField('vendor_id').setDisplayValue(record.get('vendor_name')); 
+	}
 });
 
