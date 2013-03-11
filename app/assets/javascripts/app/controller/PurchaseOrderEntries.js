@@ -190,6 +190,7 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 	deleteObject: function() {
     var record = this.getList().getSelectedObject();
 		if(!record){return;}
+		var parent_id = record.get('purchase_order_id');
 		var list  = this.getList();
 		list.setLoading(true); 
 		
@@ -201,7 +202,11 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 					// this.getList().query('pagingtoolbar')[0].doRefresh();
 					// console.log("Gonna reload the shite");
 					// this.getPurchaseOrdersStore.load();
-					list.getStore().load();
+					list.getStore().load({
+						params : {
+							purchase_order_id : parent_id
+						}
+					});
 				},
 				failure : function(record,op ){
 					list.setLoading(false);
@@ -217,7 +222,6 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 						           icon: Ext.MessageBox.ERROR
 						       });
 					}
-					
 				}
 			});
     }

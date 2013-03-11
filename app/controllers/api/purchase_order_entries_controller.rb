@@ -56,7 +56,7 @@ class Api::PurchaseOrderEntriesController < Api::BaseApiController
     @parent = @object.purchase_order 
     @object.delete(current_user)
 
-    if @object.is_deleted
+    if ( @object.persisted? and @object.is_deleted ) or ( not @object.persisted? )
       render :json => { :success => true, :total => @parent.active_purchase_order_entries.count }  
     else
       render :json => { 

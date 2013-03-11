@@ -17,35 +17,20 @@ class PurchaseReceival < ActiveRecord::Base
   
   def delete(employee) 
     return nil if employee.nil? 
-    if self.is_confirmed? 
-      # ActiveRecord::Base.transaction do
-      #   self.post_confirm_delete( employee) 
-      # end
-      return self
+
+    self.purchase_receival_entries.each do |entry|
+      entry.delete(employee)
     end
    
-    self.destroy
+    if self.is_confirmed?
+      self.is_deleted = true 
+      self.save 
+    else
+      self.destroy
+    end
   end
   
-  # def post_confirm_delete( employee) 
-  #   
-  #   # if one of its child is delivered, can't delete 
-  #   # wtf.. just delete.
-  #   
-  #   sales_item_id_list = self.sales_items.map{|x| x.id }
-  #   if DeliveryEntry.where(:sales_item_id => sales_item_id_list).count != 0 
-  #     self.errors.add(:delete_fail , "Sudah ada pengiriman." )  
-  #     return self
-  #   end
-  #   
-  #    
-  #   self.sales_items.each do |si|
-  #     si.delete( employee ) 
-  #   end 
-  #   
-  #   self.is_deleted = true 
-  #   self.save 
-  # end
+ 
   
    
   

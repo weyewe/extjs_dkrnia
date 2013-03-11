@@ -92,7 +92,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     if self.is_confirmed?  
       ActiveRecord::Base.transaction do
         self.post_confirm_delete( employee)  
-        return self
+        return 
       end 
     end
     
@@ -229,6 +229,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     return nil if self.is_confirmed == true 
     self.is_confirmed = true 
     self.save
+    self.generate_code 
     self.reload 
     
     # create  stock_entry and the associated stock mutation 

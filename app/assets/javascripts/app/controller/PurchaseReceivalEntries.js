@@ -179,15 +179,52 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 		} 
   },
 
-  deleteObject: function() {
-    var record = this.getList().getSelectedObject();
+  // deleteObject: function() {
+  //   var record = this.getList().getSelectedObject();
+  // 
+  //   if (record) {
+  //     var store = this.getPurchaseReceivalEntriesStore();
+  //     store.remove(record);
+  //     store.sync();
+  // 			this.getList().query('pagingtoolbar')[0].doRefresh();
+  //   }
+  // },
 
+	deleteObject: function() {
+    var record = this.getList().getSelectedObject();
+		if(!record){return;}
+		var list  = this.getList();
+		list.setLoading(true); 
+		
     if (record) {
-      var store = this.getPurchaseReceivalEntriesStore();
-      store.remove(record);
-      store.sync();
-			this.getList().query('pagingtoolbar')[0].doRefresh();
+			record.destroy({
+				success : function(record){
+					list.setLoading(false);
+					list.fireEvent('deleted');	
+					// this.getList().query('pagingtoolbar')[0].doRefresh();
+					// console.log("Gonna reload the shite");
+					// this.getPurchaseOrdersStore.load();
+					list.getStore().load();
+				},
+				failure : function(record,op ){
+					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'DELETE FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
+				}
+			});
     }
+
   },
 
   selectionChange: function(selectionModel, selections) {
