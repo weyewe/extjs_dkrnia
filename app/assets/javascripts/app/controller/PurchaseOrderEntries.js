@@ -97,8 +97,7 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
     var view = Ext.widget('purchaseorderentryform');
 
     view.down('form').loadRecord(record);
-		console.log("the record: " + record);
-		console.log(record);
+
 		view.setParentData( parentRecord );
 		view.setComboBoxData(record); 
   },
@@ -122,7 +121,6 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 					purchase_order_id : parentRecord.get('id')
 				},
 				success : function(record){
-					console.log("successfully loaded the shite in stock migration");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
 					// form.fireEvent('item_quantity_changed');

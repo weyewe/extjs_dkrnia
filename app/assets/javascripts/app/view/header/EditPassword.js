@@ -12,7 +12,6 @@ Ext.define('AM.view.header.EditPassword', {
     initComponent: function() {
         var me = this;
              
-				console.log(" inside initComponent of editPassword");
         Ext.apply(Ext.form.field.VTypes, {
         
             password: function(val, field) {

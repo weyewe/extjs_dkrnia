@@ -92,7 +92,6 @@ Ext.define('AM.controller.StockMigrations', {
 			form.setLoading(true);
 			record.save({
 				success : function(record){
-					console.log("successfully loaded the shite in stock migration");
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
 					form.fireEvent('item_quantity_changed');

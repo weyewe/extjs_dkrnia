@@ -71,6 +71,12 @@ Ext.define('AM.controller.PurchaseOrders', {
 						me.getViewport().setLoading( false );
 						list.getStore().load({
 							callback : function(records, options, success){
+								console.log( records );
+								console.log("The shite of this: ");
+								console.log( this );
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
 								list.fireEvent('confirmed', record);
 							}
 						});
@@ -174,7 +180,6 @@ Ext.define('AM.controller.PurchaseOrders', {
     if (record) {
 			record.destroy({
 				success : function(record){
-					console.log("Succesfully destroyed the purchase order");
 					list.setLoading(false);
 					list.fireEvent('deleted');	
 					// this.getList().query('pagingtoolbar')[0].doRefresh();
