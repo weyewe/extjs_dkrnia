@@ -87,6 +87,26 @@ Ext.define('AM.view.inventory.purchaseorderentry.Form', {
 
 	setParentData: function( record ){
 		this.down('form').getForm().findField('purchase_order_code').setValue(record.get('code')); 
+	},
+	
+	setComboBoxData : function( record){
+		console.log("In the set comboBox data");
+		console.log("item_id : " + record.get("item_id"));
+		var me = this; 
+		me.setLoading(true);
+		var comboBox = this.down('form').getForm().findField('item_id'); 
+		
+		var store = comboBox.store; 
+		store.load({
+			params: {
+				selected_id : record.get("item_id")
+			},
+			callback : function(records, options, success){
+				console.log("Done loading. IN the callback");
+				me.setLoading(false);
+				comboBox.setValue( record.get("item_id"));
+			}
+		});
 	}
 });
 

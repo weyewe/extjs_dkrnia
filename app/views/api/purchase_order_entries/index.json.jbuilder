@@ -5,6 +5,7 @@ json.purchase_order_entries @objects do |object|
 	json.code 			object.code
 	json.id 				object.id 
 	json.item_name 				object.item.name 
+	json.item_id 				object.item.id
 	json.quantity 				object.quantity
 	json.is_confirmed object.is_confirmed 
 end

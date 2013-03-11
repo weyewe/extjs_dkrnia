@@ -92,9 +92,7 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
 		var me = this; 
 		me.setLoading(true);
 		var comboBox = this.down('form').getForm().findField('vendor_id'); 
-		// comboBox.value = record.get("vendor_id");
-		// comboBox.lastSelectionText = record.get("vendor_name");
-		// 
+		
 		var store = comboBox.store; 
 		store.load({
 			params: {

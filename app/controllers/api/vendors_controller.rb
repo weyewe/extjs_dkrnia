@@ -66,7 +66,6 @@ class Api::VendorsController < Api::BaseApiController
       selected_id = nil
     end
     
-    # query = '%' + search_params + '%'
     query = "%#{search_params}%"
     # on PostGre SQL, it is ignoring lower case or upper case 
     

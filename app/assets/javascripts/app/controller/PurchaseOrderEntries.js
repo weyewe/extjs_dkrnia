@@ -97,7 +97,10 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
     var view = Ext.widget('purchaseorderentryform');
 
     view.down('form').loadRecord(record);
+		console.log("the record: " + record);
+		console.log(record);
 		view.setParentData( parentRecord );
+		view.setComboBoxData(record); 
   },
 
   updateObject: function(button) {
