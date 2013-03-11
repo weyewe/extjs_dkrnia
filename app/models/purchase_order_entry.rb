@@ -94,7 +94,7 @@ class PurchaseOrderEntry < ActiveRecord::Base
   
   def post_confirm_delete( employee) 
     if self.purchase_receival_entries.count != 0 
-      self.errors.add(:generic_error , "Sudah ada penerimaan barang" )
+      self.errors.add(:generic_errors , "Sudah ada penerimaan barang" )
       return self
     end 
  

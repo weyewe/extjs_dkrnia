@@ -55,7 +55,13 @@ class Api::PurchaseOrdersController < Api::BaseApiController
     if ( @object.is_confirmed? and @object.is_deleted) or (  not @object.is_confirmed? and not @object.persisted?)  
       render :json => { :success => true, :total => PurchaseOrder.active_objects.count }  
     else
-      render :json => { :success => false, :total => PurchaseOrder.active_objects.count }  
+      render :json => { 
+                :success => false, 
+                :total => PurchaseOrder.active_objects.count,
+                :message => {
+                  :errors => extjs_error_format( @object.errors )  
+                } 
+              }  
     end
   end
   

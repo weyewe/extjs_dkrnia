@@ -81,7 +81,9 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 			return; 
 		}
 		 
-    var view = Ext.widget('purchasereceivalentryform');
+    var view = Ext.widget('purchasereceivalentryform', {
+			parentRecord : record 
+		});
 		view.setParentData( record );
     view.show(); 
   },
@@ -94,7 +96,9 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 			return; 
 		}
 
-    var view = Ext.widget('purchasereceivalentryform');
+    var view = Ext.widget('purchasereceivalentryform', {
+			parentRecord : parentRecord
+		});
 
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );

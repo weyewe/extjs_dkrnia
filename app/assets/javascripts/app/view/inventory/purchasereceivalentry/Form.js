@@ -9,14 +9,28 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 	modal : true, 
 // win.show() 
 // if autoShow == true.. on instantiation, will automatically be called 
+	parentRecord : null, 
+
+	constructor : function(cfg){
+		this.parentRecord = cfg.parentRecord;
+		this.callParent(arguments);
+	},
 	
   initComponent: function() {
+	// get the parent id 
+		console.log("Inside the initComponent of the Form");
+		console.log( this.parentRecord  );
+		if( !this.parentRecord){ return; }
+	
 		var remoteJsonStore = Ext.create(Ext.data.JsonStore, {
 			storeId : 'purchase_order_entry_search',
 			fields	: ['id','item_name', 'purchase_order_entry_code', 'purchase_order_code' ],
 			proxy  	: {
 				type : 'ajax',
 				url : 'api/search_purchase_order_entry',
+				extraParams: {
+					vendor_id : this.parentRecord.get('vendor_id')
+		    },
 				reader : {
 					type : 'json',
 					root : 'records', 

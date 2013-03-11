@@ -186,6 +186,19 @@ Ext.define('AM.controller.PurchaseOrders', {
 				},
 				failure : function(record,op ){
 					list.setLoading(false);
+					
+					var message  = op.request.scope.reader.jsonData["message"];
+					var errors = message['errors'];
+					
+					if( errors["generic_errors"] ){
+						Ext.MessageBox.show({
+						           title: 'DELETE FAIL',
+						           msg: errors["generic_errors"],
+						           buttons: Ext.MessageBox.OK, 
+						           icon: Ext.MessageBox.ERROR
+						       });
+					}
+					
 				}
 			});
     }

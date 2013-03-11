@@ -59,7 +59,13 @@ class Api::PurchaseOrderEntriesController < Api::BaseApiController
     if @object.is_deleted
       render :json => { :success => true, :total => @parent.active_purchase_order_entries.count }  
     else
-      render :json => { :success => false, :total =>@parent.active_purchase_order_entries.count }  
+      render :json => { 
+                :success => false, 
+                :total => @parent.active_purchase_order_entries.count,
+                :message => {
+                  :errors => extjs_error_format( @object.errors )  
+                } 
+              }  
     end
   end
   
@@ -70,19 +76,23 @@ class Api::PurchaseOrderEntriesController < Api::BaseApiController
       selected_id = nil
     end
     
+    vendor_id = params[:vendor_id]
+    
     query = "%#{search_params}%"
     # on PostGre SQL, it is ignoring lower case or upper case 
     
     if  selected_id.nil?
       @objects = PurchaseOrderEntry.joins(:item, :purchase_order).where{ (item.name =~ query )   & 
-                                (is_deleted.eq false )
+                                (is_deleted.eq false )  & 
+                                (purchase_order.vendor_id.eq vendor_id)
                               }.
                         page(params[:page]).
                         per(params[:limit]).
                         order("id DESC")
     else
       @objects = PurchaseOrderEntry.joins(:item, :purchase_order).where{ (id.eq selected_id)  & 
-                                (is_deleted.eq false )
+                                (is_deleted.eq false ) & 
+                                (purchase_order.vendor_id.eq vendor_id)
                               }.
                         page(params[:page]).
                         per(params[:limit]).
