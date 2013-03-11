@@ -12,7 +12,17 @@ Ext.define('AM.view.inventory.purchasereceival.Form', {
 	
 		var remoteJsonStore = Ext.create(Ext.data.JsonStore, {
 			storeId : 'vendor_search',
-			fields	: ['id','name'],
+			fields	: [
+				{
+					name : 'vendor_id',
+					mapping : "id"
+				},
+				{
+					name : 'vendor_name',
+					mapping : 'name'
+				}
+					// 'id','name'
+			],
 			proxy  	: {
 				type : 'ajax',
 				url : 'api/search_vendor',
@@ -21,7 +31,8 @@ Ext.define('AM.view.inventory.purchasereceival.Form', {
 					root : 'records', 
 					totalProperty  : 'total'
 				}
-			}
+			},
+			autoLoad : false 
 		});
 	
     this.items = [{
@@ -40,27 +51,27 @@ Ext.define('AM.view.inventory.purchasereceival.Form', {
 	        fieldLabel: 'id'
 	      },
 				{
-					name : 'vendor_id',
 					fieldLabel: ' Vendor ',
 					xtype: 'combo',
 					queryMode: 'remote',
 					forceSelection: true, 
-					displayField : 'name',
-					valueField : 'id',
+					displayField : 'vendor_name',
+					valueField : 'vendor_id',
 					pageSize : 5,
 					minChars : 1, 
+					allowBlank : false, 
 					triggerAction: 'all',
 					store : remoteJsonStore, 
 					listConfig : {
 						getInnerTpl: function(){
-							return '<div data-qtip="{name}">' + 
-							'<div class="combo-name">{name}</div>' + 
-							'<div class="combo-full-address">{address}</div>' + 
-							'<div class="combo-full-adderss">{city}  {state} {zip}</div>' + 
-							'</div>';
+							return '<div data-qtip="{vendor_name}">' + 
+												'<div class="combo-name">{vendor_name}</div>' + 
+												'<div class="combo-full-address">{address}</div>' + 
+												'<div class="combo-full-adderss">{city}  {state} {zip}</div>' + 
+											'</div>';
 						}
-					}
-
+					},
+					name : 'vendor_id' 
 				}
 			]
     }];
@@ -75,6 +86,23 @@ Ext.define('AM.view.inventory.purchasereceival.Form', {
     }];
 
     this.callParent(arguments);
-  }
+  },
+
+	setComboBoxData : function( record){
+		var me = this; 
+		me.setLoading(true);
+		var comboBox = this.down('form').getForm().findField('vendor_id'); 
+		
+		var store = comboBox.store; 
+		store.load({
+			params: {
+				selected_id : record.get("vendor_id")
+			},
+			callback : function(records, options, success){
+				me.setLoading(false);
+				comboBox.setValue( record.get("vendor_id"));
+			}
+		});
+	}
 });
 

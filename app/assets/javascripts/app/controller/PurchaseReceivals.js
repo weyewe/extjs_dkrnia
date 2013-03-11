@@ -6,8 +6,8 @@ Ext.define('AM.controller.PurchaseReceivals', {
 
   views: [
     'inventory.purchasereceival.List',
-    'inventory.purchasereceival.Form'// ,
-    // 		'inventory.purchasereceivalentry.List'
+    'inventory.purchasereceival.Form',
+		'inventory.purchasereceivalentry.List'
   ],
 
   refs: [
@@ -71,6 +71,9 @@ Ext.define('AM.controller.PurchaseReceivals', {
 						me.getViewport().setLoading( false );
 						list.getStore().load({
 							callback : function(records, options, success){
+								// this => refers to a store 
+								record = this.getById(record.get('id'));
+								// record = records.getById( record.get('id'))
 								list.fireEvent('confirmed', record);
 							}
 						});
@@ -98,8 +101,9 @@ Ext.define('AM.controller.PurchaseReceivals', {
     var record = this.getList().getSelectedObject();
 		if(!record){return;}
     var view = Ext.widget('purchasereceivalform');
-
+	
     view.down('form').loadRecord(record);
+		view.setComboBoxData(record); 
   },
 
   updateObject: function(button) {
@@ -110,6 +114,9 @@ Ext.define('AM.controller.PurchaseReceivals', {
 		var list = this.getList();
     var record = form.getRecord();
     var values = form.getValues();
+
+		 
+		
 
 		
 		if( record ){
@@ -172,6 +179,9 @@ Ext.define('AM.controller.PurchaseReceivals', {
 				success : function(record){
 					list.setLoading(false);
 					list.fireEvent('deleted');	
+					// this.getList().query('pagingtoolbar')[0].doRefresh();
+					// console.log("Gonna reload the shite");
+					// this.getPurchaseReceivalsStore.load();
 					list.getStore().load();
 				},
 				failure : function(record,op ){
@@ -190,7 +200,7 @@ Ext.define('AM.controller.PurchaseReceivals', {
 			return; 
 		}
 		var purchaseReceivalEntryGrid = this.getPurchaseReceivalEntryList();
-		// purchaseReceivalEntryGrid.setTitle("Purchase Receival: " + record.get('code'));
+		// purchaseReceivalEntryGrid.setTitle("Purchase Order: " + record.get('code'));
 		purchaseReceivalEntryGrid.setObjectTitle( record ) ;
 		purchaseReceivalEntryGrid.getStore().load({
 			params : {

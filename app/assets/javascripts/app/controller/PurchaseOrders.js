@@ -71,9 +71,6 @@ Ext.define('AM.controller.PurchaseOrders', {
 						me.getViewport().setLoading( false );
 						list.getStore().load({
 							callback : function(records, options, success){
-								console.log( records );
-								console.log("The shite of this: ");
-								console.log( this );
 								// this => refers to a store 
 								record = this.getById(record.get('id'));
 								// record = records.getById( record.get('id'))

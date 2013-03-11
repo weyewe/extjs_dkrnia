@@ -9,6 +9,7 @@ ExtjsDikarunia::Application.routes.draw do
     
     match 'search_vendor' => 'vendors#search', :as => :search_vendor, :method => :get
     match 'search_item' => 'items#search', :as => :search_items, :method => :get
+    match 'search_purchase_order_entry' => 'purchase_order_entries#search', :as => :search_purchase_order_entries, :method => :get
     
     resources :employees
     resources :vendors

@@ -98,6 +98,7 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );
+		view.setComboBoxData(record); 
   },
 
   updateObject: function(button) {
