@@ -45,67 +45,41 @@ Ext.onReady(function(){
 	    }
 	  }, this);
 	
-		console.log("Overriding combobox");
- 		Ext.form.field.ComboBox.override( {
-		    setValue: function(v) {
-		        // v = (v && v.toString) ? v.toString() : v;
-
-		        if(!this.store.isLoaded && this.queryMode == 'remote' && v) {
-								
-								
-		            this.store.addListener('load', function() {
-		                this.store.isLoaded = true;
-								
-		
-										var text = v;
-										if(this.valueField){
-											// var r = this.findRecord(this.valueField, v);
-											var r = this.store.findRecord( this.valueField, v);
-											if(r){
-												text = r.get( this.displayField); //r.data[this.displayField];
-												console.log("The text is : " + text);
-											}else if(this.valueNotFoundText !== undefined){
-												text = this.valueNotFoundText;
-											}
-										}
-										this.lastSelectionText = text;
-										if(this.hiddenField){
-											this.hiddenField.value = v;
-										}
-										Ext.form.ComboBox.superclass.setValue.call(this, text);
-										this.value = r.get( this.valueField);
-										
-										
-		            }, this);
-							
-		           this.store.load({
-								params : {
-									selected_id : v
-								}
-							});
-		        } else {
-		            this.callOverridden(arguments);
-		        }
-		    }
-		});
+		//  		Ext.form.field.ComboBox.override( {
+		//     setValue: function(v) {
+		//         // v = (v && v.toString) ? v.toString() : v;
+		// 		
+		//         if(!this.store.isLoaded && this.queryMode == 'remote' && v) {
+		// 						console.log("FIRST branch");
+		//             this.store.addListener('load', function() {
+		// 								
+		//                 this.store.isLoaded = true;
+		// 								console.log("The value of v is " + v);
+		// 								var text = v;
+		// 								var record = this.store.findRecord( this.valueField, v);
+		// 								if(record){
+		// 									text = record.get( this.displayField);  
+		// 									this.lastSelectionText = text; 
+		// 									this.value = record.get( this.valueField);
+		// 								}
+		// 								
+		//             }, this);
+		// 					
+		// 						this.store.load({
+		// 							params : {
+		// 								selected_id : v
+		// 							}
+		// 						});
+		//         } else {
+		// 						console.log("SECOND branch");
+		// 						if(v){
+		// 							this.callOverridden(arguments);
+		// 						}
+		//             
+		//         }
+		//     }
+		// });
 });
 
-
-// setValue : function(v){
-// 	var text = v;
-// 	if(this.valueField){
-// 		var r = this.findRecord(this.valueField, v);
-// 		if(r){
-// 			text = r.data[this.displayField];
-// 		}else if(this.valueNotFoundText !== undefined){
-// 			text = this.valueNotFoundText;
-// 		}
-// 	}
-// 	this.lastSelectionText = text;
-// 	if(this.hiddenField){
-// 		this.hiddenField.value = v;
-// 	}
-// 	Ext.form.ComboBox.superclass.setValue.call(this, text);
-// 	this.value = v;
-// },
+ 
 

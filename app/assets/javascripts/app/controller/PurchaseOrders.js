@@ -104,6 +104,7 @@ Ext.define('AM.controller.PurchaseOrders', {
 		
 		console.log("^^^^^^^^^^^^^^^^^^ in the controller, gonna loadRecord");
     view.down('form').loadRecord(record);
+		view.setComboBoxData(record);
 		console.log("&&&&&&&&&&&& in the controller, post loadRecord")
   },
 

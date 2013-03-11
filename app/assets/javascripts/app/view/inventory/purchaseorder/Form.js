@@ -65,33 +65,13 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
 					listConfig : {
 						getInnerTpl: function(){
 							return '<div data-qtip="{vendor_name}">' + 
-							'<div class="combo-name">{vendor_name}</div>' + 
-							'<div class="combo-full-address">{address}</div>' + 
-							'<div class="combo-full-adderss">{city}  {state} {zip}</div>' + 
-							'</div>';
+												'<div class="combo-name">{vendor_name}</div>' + 
+												'<div class="combo-full-address">{address}</div>' + 
+												'<div class="combo-full-adderss">{city}  {state} {zip}</div>' + 
+											'</div>';
 						}
 					},
-					// getDisplayValue : function(){
-					// 	console.log("INside the combobox getDisplayValue");
-					// 	console.log( this ) ;
-					// 	// var form = this.up('form');
-					// 	// var record = form.getRecord();
-					// 	// var record = this.up("form").getForm().getRecord();
-					// 	// if(record){
-					// 	// 	return record.get("vendor_name");
-					// 	// }else{
-					// 	// 	return "";
-					// 	// }
-					// 	// if(record){
-					// 	// 	console.log("666666666 Willy is awesome!");
-					// 	// }
-					// 	return "";
-					// 	
-					// },
-					name : 'vendor_id'// ,
-					// 					value : 'this man is awesome',
-					// 					emptyText : "Vendor baby"
-
+					name : 'vendor_id' 
 				}
 			]
     }];
@@ -109,8 +89,22 @@ Ext.define('AM.view.inventory.purchaseorder.Form', {
   },
 
 	setComboBoxData : function( record){
-		this.down('form').getForm().findField('vendor_id').setValue(record.get('vendor_id')); 
-		// this.down('form').getForm().findField('vendor_id').setDisplayValue(record.get('vendor_name')); 
+		var me = this; 
+		me.setLoading(true);
+		var comboBox = this.down('form').getForm().findField('vendor_id'); 
+		// comboBox.value = record.get("vendor_id");
+		// comboBox.lastSelectionText = record.get("vendor_name");
+		// 
+		var store = comboBox.store; 
+		store.load({
+			params: {
+				selected_id : record.get("vendor_id")
+			},
+			callback : function(records, options, success){
+				me.setLoading(false);
+				comboBox.setValue( record.get("vendor_id"));
+			}
+		});
 	}
 });
 
