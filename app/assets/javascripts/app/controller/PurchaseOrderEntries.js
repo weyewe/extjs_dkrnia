@@ -178,17 +178,6 @@ Ext.define('AM.controller.PurchaseOrderEntries', {
 		} 
   },
 
-  // deleteObject: function() {
-  //   var record = this.getList().getSelectedObject();
-  // 
-  //   if (record) {
-  //     var store = this.getPurchaseOrderEntriesStore();
-  //     store.remove(record);
-  //     store.sync();
-  // 			this.getList().query('pagingtoolbar')[0].doRefresh();
-  //   }
-  // },
-
 	deleteObject: function() {
     var record = this.getList().getSelectedObject();
 		if(!record){return;}

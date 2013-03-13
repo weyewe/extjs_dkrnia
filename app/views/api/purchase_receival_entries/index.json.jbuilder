@@ -2,6 +2,7 @@ json.success true
 json.total @total
 json.purchase_receival_entries @objects do |object|
 	json.purchase_receival_code object.purchase_receival.code 
+	json.purchase_receival_id object.purchase_receival_id  
 	json.code 			object.code
 	json.id 				object.id 
 	json.item_name 				object.purchase_order_entry.item.name  
