@@ -8,7 +8,7 @@ Ext.define('AM.view.inventory.purchasereceivalentry.List' ,{
 	initComponent: function() {
 		this.columns = [
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
-			{ header: 'Purchase Receival',  dataIndex: 'purchase_order_code',  flex: 1 , sortable: false},
+			{ header: 'Purchase Order',  dataIndex: 'purchase_order_code',  flex: 1 , sortable: false},
 			{ header: 'Purchase Entry',  dataIndex: 'purchase_order_entry_code',  flex: 1 , sortable: false},
 			{ header: 'Item',  dataIndex: 'item_name',  flex: 1 , sortable: false},
 			{ header: 'Quantity',  dataIndex: 'quantity',  flex: 1 , sortable: false} 

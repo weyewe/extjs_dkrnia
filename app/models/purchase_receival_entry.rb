@@ -48,7 +48,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
   def quantity_must_not_less_than_zero
     if quantity.present? and quantity <= 0 
       msg = "Kuantitas  tidak boleh 0 atau negative "
-      errors.add(:quantity_for_production , msg )
+      errors.add(:quantity , msg )
     end
   end
      
@@ -71,6 +71,13 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     return nil if purchase_order_entry.nil? 
     
     parent = self.purchase_receival 
+    
+    # on update, this validation is called before_save 
+    # so, when we are searching, it won't be found out. 
+    # there is only 1 in the database. with this new shite. it is gonna be 2. 
+    
+    # but on create, this validation somewhow shows the data. NO.it is our fault
+    # in the create action, it calls 2 #CREATE action
     purchase_receival_entry_count = PurchaseReceivalEntry.where(
       :purchase_order_entry_id => self.purchase_order_entry_id,
       :purchase_receival_id => parent.id  
@@ -79,10 +86,12 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     item = purchase_order_entry.item 
     purchase_order = purchase_order_entry.purchase_order
     msg = "Item #{item.name} dari pemesanan #{purchase_order.code} sudah terdaftar di penerimaan ini"
- 
+    
     if not self.persisted? and purchase_receival_entry_count != 0
       errors.add(:purchase_order_entry_id , msg ) 
-    elsif self.persisted? and purchase_receival_entry_count > 1 
+    elsif self.persisted? and not self.purchase_order_entry_id_changed? and purchase_receival_entry_count > 1
+      errors.add(:purchase_order_entry_id , msg ) 
+    elsif self.persisted? and self.purchase_order_entry_id_changed? and purchase_receival_entry_count != 0 
       errors.add(:purchase_order_entry_id , msg ) 
     end
   end

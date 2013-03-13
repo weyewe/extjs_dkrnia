@@ -1,38 +1,38 @@
-Ext.define('AM.controller.Vendors', {
+Ext.define('AM.controller.Customers', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Vendors'],
-  models: ['Vendor'],
+  stores: ['Customers'],
+  models: ['Customer'],
 
   views: [
-    'inventory.vendor.List',
-    'inventory.vendor.Form'
+    'sales.customer.List',
+    'sales.customer.Form'
   ],
 
   	refs: [
 		{
 			ref: 'list',
-			selector: 'vendorlist'
+			selector: 'customerlist'
 		} 
 	],
 
   init: function() {
     this.control({
-      'vendorlist': {
+      'customerlist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
 				afterrender : this.loadObjectList,
       },
-      'vendorform button[action=save]': {
+      'customerform button[action=save]': {
         click: this.updateObject
       },
-      'vendorlist button[action=addObject]': {
+      'customerlist button[action=addObject]': {
         click: this.addObject
       },
-      'vendorlist button[action=editObject]': {
+      'customerlist button[action=editObject]': {
         click: this.editObject
       },
-      'vendorlist button[action=deleteObject]': {
+      'customerlist button[action=deleteObject]': {
         click: this.deleteObject
       } 
 		
@@ -45,13 +45,13 @@ Ext.define('AM.controller.Vendors', {
 	},
 
   addObject: function() {
-    var view = Ext.widget('vendorform');
+    var view = Ext.widget('customerform');
     view.show();
   },
 
   editObject: function() {
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('vendorform');
+    var view = Ext.widget('customerform');
 
     view.down('form').loadRecord(record);
   },
@@ -60,7 +60,7 @@ Ext.define('AM.controller.Vendors', {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getVendorsStore();
+    var store = this.getCustomersStore();
     var record = form.getRecord();
     var values = form.getValues();
 
@@ -89,7 +89,7 @@ Ext.define('AM.controller.Vendors', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Vendor( values ) ;
+			var newObject = new AM.model.Customer( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
@@ -118,11 +118,11 @@ Ext.define('AM.controller.Vendors', {
     var record = this.getList().getSelectedObject();
 
     if (record) {
-      var store = this.getVendorsStore();
+      var store = this.getCustomersStore();
       store.remove(record);
       store.sync();
 // to do refresh programmatically
-			this.getList().query('pagingtoolbar')[0].doRefresh();
+		this.getList().query('pagingtoolbar')[0].doRefresh();
     }
 
   },

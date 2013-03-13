@@ -4,6 +4,7 @@ Ext.define('AM.model.PurchaseReceivalEntry', {
     	{ name: 'id', type: 'int' },
     	{ name: 'code', type: 'string' } ,
 			{ name: 'purchase_receival_code', type: 'string' },
+			{ name: 'purchase_receival_id', type: 'int' },
 			{ name: 'item_name', type: 'string'},
 			
 			// purchase order entry  related 

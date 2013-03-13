@@ -81,6 +81,7 @@ Ext.define('AM.controller.Employees', {
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					this.reject();
 				}
 			});
 				
@@ -107,6 +108,7 @@ Ext.define('AM.controller.Employees', {
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					this.reject();
 				}
 			});
 		} 
@@ -120,7 +122,7 @@ Ext.define('AM.controller.Employees', {
       store.remove(record);
       store.sync();
 // to do refresh programmatically
-		this.getList().query('pagingtoolbar')[0].doRefresh();
+			this.getList().query('pagingtoolbar')[0].doRefresh();
     }
 
   },

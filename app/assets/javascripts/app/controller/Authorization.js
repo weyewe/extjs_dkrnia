@@ -109,7 +109,7 @@ Ext.define("AM.controller.Authorization", {
 	                    
                     { 
                         text:'Customer', 
-                        viewClass:'Bravo', 
+                        viewClass:'AM.view.sales.Customer', 
                         leaf:true, 
                         iconCls:'text' 
                     },

@@ -102,6 +102,8 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );
+		console.log("selected record id: " + record.get('id'));
+		console.log("The selected poe id: " + record.get('purchase_order_entry_id'));
 		view.setComboBoxData(record); 
   },
 
@@ -140,6 +142,8 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					
+					this.reject(); 
 				}
 			});
 				
@@ -167,13 +171,13 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 					// form.fireEvent('item_quantity_changed');
 					form.setLoading(false);
 					win.close();
-					
 				},
 				failure: function( record, op){
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					this.reject();
 				}
 			});
 		} 

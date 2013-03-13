@@ -92,6 +92,7 @@ Ext.define('AM.controller.ItemDatabases', {
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					this.reject();
 				}
 			});
 				
@@ -118,6 +119,7 @@ Ext.define('AM.controller.ItemDatabases', {
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
+					this.reject();
 				}
 			});
 		} 
