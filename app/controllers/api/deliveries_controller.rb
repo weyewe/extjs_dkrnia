@@ -1,7 +1,7 @@
 class Api::DeliveriesController < Api::BaseApiController
   
   def index
-    @objects = Delivery.joins(:employee).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+    @objects = Delivery.joins(:employee, :customer).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
     @total = Delivery.active_objects.count
   end
 

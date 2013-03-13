@@ -9,6 +9,7 @@ Ext.define('AM.view.sales.delivery.List' ,{
 		this.columns = [
 			{ header: 'ID', dataIndex: 'id'},
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
+			{ header: 'Customer',  dataIndex: 'customer_name',  flex: 1 , sortable: false},
 			{ header: 'Employee',  dataIndex: 'employee_name',  flex: 1 , sortable: false},
 			{ header: 'Confirmed?',  dataIndex: 'is_confirmed',  flex: 1 , sortable: false},
 		];

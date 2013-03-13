@@ -33,6 +33,30 @@ Ext.define('AM.view.sales.delivery.Form', {
 			},
 			autoLoad : false 
 		});
+		
+		var customerJsonStore = Ext.create(Ext.data.JsonStore, {
+			storeId : 'customer_search',
+			fields	: [
+	 				{
+						name : 'customer_id',
+						mapping : "id"
+					},
+					{
+						name : 'customer_name',
+						mapping : 'name'
+					}
+			],
+			proxy  	: {
+				type : 'ajax',
+				url : 'api/search_customer',
+				reader : {
+					type : 'json',
+					root : 'records', 
+					totalProperty  : 'total'
+				}
+			},
+			autoLoad : false 
+		});
 	
     this.items = [{
       xtype: 'form',
@@ -69,6 +93,27 @@ Ext.define('AM.view.sales.delivery.Form', {
 						}
 					},
 					name : 'employee_id' 
+				},
+				{
+					fieldLabel: ' Customer ',
+					xtype: 'combo',
+					queryMode: 'remote',
+					forceSelection: true, 
+					displayField : 'customer_name',
+					valueField : 'customer_id',
+					pageSize : 5,
+					minChars : 1, 
+					allowBlank : false, 
+					triggerAction: 'all',
+					store : customerJsonStore, 
+					listConfig : {
+						getInnerTpl: function(){
+							return '<div data-qtip="{customer_name}">' +  
+												'<div class="combo-name">{customer_name}</div>' + 
+										 '</div>';
+						}
+					},
+					name : 'customer_id' 
 				}
 			]
     }];
@@ -86,18 +131,32 @@ Ext.define('AM.view.sales.delivery.Form', {
   },
 
 	setComboBoxData : function( record){
+		console.log("Gonna set combo box data for delivery form");
 		var me = this; 
-		me.setLoading(true);
+		// me.setLoading(true);
 		var comboBox = this.down('form').getForm().findField('employee_id'); 
-		
+		comboBox.setLoading(true);
 		var store = comboBox.store; 
 		store.load({
 			params: {
 				selected_id : record.get("employee_id")
 			},
 			callback : function(records, options, success){
-				me.setLoading(false);
+				comboBox.setLoading(false);
 				comboBox.setValue( record.get("employee_id"));
+			}
+		});
+		
+		var comboBox2 = this.down('form').getForm().findField('customer_id'); 
+		comboBox2.setLoading( true ) ;
+		var store2 = comboBox2.store; 
+		store2.load({
+			params: {
+				selected_id : record.get("customer_id")
+			},
+			callback : function(records, options, success){
+				comboBox2.setLoading(false);
+				comboBox2.setValue( record.get("customer_id"));
 			}
 		});
 	}

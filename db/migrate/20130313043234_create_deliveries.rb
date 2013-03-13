@@ -2,6 +2,7 @@ class CreateDeliveries < ActiveRecord::Migration
   def change
     create_table :deliveries do |t|
       t.integer :employee_id 
+      t.integer :customer_id
       t.integer :creator_id
       
       t.date :delivery_date  

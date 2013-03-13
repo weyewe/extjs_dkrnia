@@ -70,8 +70,9 @@ Ext.define('AM.controller.StockMigrations', {
   editObject: function() {
 		var parentRecord = this.getItemList().getSelectedObject();
     var record = this.getList().getSelectedObject();
-    var view = Ext.widget('stockmigrationform');
+		if( !parentRecord ) {return;}
 
+    var view = Ext.widget('stockmigrationform');
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );
   },

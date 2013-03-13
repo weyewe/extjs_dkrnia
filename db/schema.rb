@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20130313060741) do
 
   create_table "deliveries", :force => true do |t|
     t.integer  "employee_id"
+    t.integer  "customer_id"
     t.integer  "creator_id"
     t.date     "delivery_date"
     t.string   "code"

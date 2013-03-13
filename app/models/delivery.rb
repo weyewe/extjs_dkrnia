@@ -3,9 +3,12 @@ class Delivery < ActiveRecord::Base
   # attr_accessible :title, :body
   validates_presence_of :creator_id
   validates_presence_of :employee_id 
+  
+  
     
   has_many :delivery_entries 
   belongs_to :employee 
+  belongs_to :customer 
   
    
    
@@ -53,6 +56,7 @@ class Delivery < ActiveRecord::Base
       return self
     end
     self.employee_id = params[:employee_id]
+    self.customer_id = params[:customer_id]
     self.save
     return self 
   end
@@ -67,6 +71,7 @@ class Delivery < ActiveRecord::Base
     new_object = self.new
     new_object.creator_id = employee.id
     new_object.employee_id = params[:employee_id]
+    new_object.customer_id = params[:customer_id]
     new_object.delivery_date = params[:delivery_date]
     # today_date_time = DateTime.now 
     # 

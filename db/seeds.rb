@@ -71,5 +71,15 @@ item_name_array.each do |item_name|
     :supplier_code => "SC_#{item_name}",
     :customer_code => "CC_#{item_name}"
   } )
-end                
+end    
+
+employee_name_array  = ["Kusno", "Tommy", "Yongky"]            
+employee_name_array.each do |name|
+  Employee.create(:name => name)
+end
+
+customer_name_array  = ["McDonald Gading", "McDonald Daan Mogot", "7-11"]            
+customer_name_array.each do |name|
+  Customer.create(:name => name)
+end
  
