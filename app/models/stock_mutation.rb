@@ -111,13 +111,13 @@ class StockMutation < ActiveRecord::Base
       new_object.source_document_id       = delivery_entry.delivery.id 
       new_object.source_document_entry    = delivery_entry.class.to_s
       new_object.source_document          = delivery_entry.delivery.class.to_s
-      new_object.item_id                  = delivery_entry.item_id 
+      new_object.item_id                  = delivery_entry.sales_order_entry.item_id 
       new_object.mutation_case            = MUTATION_CASE[:delivery] 
       new_object.mutation_status          = MUTATION_STATUS[:deduction]
       new_object.save 
     else
       past_object.quantity = delivery_entry.quantity_sent
-      past_object.item_id = delivery_entry.item_id 
+      past_object.item_id = delivery_entry.sales_order_entry.item_id 
      
       past_object.save 
     end

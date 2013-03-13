@@ -72,12 +72,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     
     parent = self.purchase_receival 
     
-    # on update, this validation is called before_save 
-    # so, when we are searching, it won't be found out. 
-    # there is only 1 in the database. with this new shite. it is gonna be 2. 
-    
-    # but on create, this validation somewhow shows the data. NO.it is our fault
-    # in the create action, it calls 2 #CREATE action
+   
     purchase_receival_entry_count = PurchaseReceivalEntry.where(
       :purchase_order_entry_id => self.purchase_order_entry_id,
       :purchase_receival_id => parent.id  

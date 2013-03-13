@@ -8,10 +8,9 @@ Ext.define('AM.view.sales.deliveryentry.List' ,{
 	initComponent: function() {
 		this.columns = [
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
-			{ header: 'Purchase Order',  dataIndex: 'purchase_order_code',  flex: 1 , sortable: false},
-			{ header: 'Purchase Entry',  dataIndex: 'purchase_order_entry_code',  flex: 1 , sortable: false},
+			{ header: 'Sales Order',  dataIndex: 'sales_order_code',  flex: 1 , sortable: false},
 			{ header: 'Item',  dataIndex: 'item_name',  flex: 1 , sortable: false},
-			{ header: 'Quantity',  dataIndex: 'quantity',  flex: 1 , sortable: false} 
+			{ header: 'Quantity',  dataIndex: 'quantity_sent',  flex: 1 , sortable: false} 
 		];
 
 		this.addObjectButton = new Ext.Button({
@@ -67,6 +66,6 @@ Ext.define('AM.view.sales.deliveryentry.List' ,{
 	},
 	
 	setObjectTitle : function(record){
-		this.setTitle("Purchase Receivals: " + record.get("code"));
+		this.setTitle("Delivery: " + record.get("code"));
 	}
 });

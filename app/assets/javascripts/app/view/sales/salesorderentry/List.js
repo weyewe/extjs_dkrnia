@@ -65,6 +65,6 @@ Ext.define('AM.view.sales.salesorderentry.List' ,{
 	},
 	
 	setObjectTitle : function(record){
-		this.setTitle("Purchase Receivals: " + record.get("code"));
+		this.setTitle("Sales Order: " + record.get("code"));
 	}
 });

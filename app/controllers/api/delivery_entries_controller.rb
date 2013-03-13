@@ -1,19 +1,19 @@
-class Api::PurchaseReceivalEntriesController < Api::BaseApiController
+class Api::DeliveryEntriesController < Api::BaseApiController
   
   def index
-    @parent = PurchaseReceival.find_by_id params[:purchase_receival_id]
-    @objects = @parent.active_purchase_receival_entries.joins(:item, :purchase_receival).page(params[:page]).per(params[:limit]).order("id DESC")
-    @total = @parent.active_purchase_receival_entries.count
+    @parent = Delivery.find_by_id params[:delivery_id]
+    @objects = @parent.active_delivery_entries.joins( :delivery, :sales_order_entry =>[:item]).page(params[:page]).per(params[:limit]).order("id DESC")
+    @total = @parent.active_delivery_entries.count
   end
 
   def create
-    @parent = PurchaseReceival.find_by_id params[:purchase_receival_id]
-    @object = PurchaseReceivalEntry.create_by_employee(current_user, @parent,  params[:purchase_receival_entry] )  
+    @parent = Delivery.find_by_id params[:delivery_id]
+    @object = DeliveryEntry.create_by_employee(current_user, @parent,  params[:delivery_entry] )  
     
     if @object.errors.size == 0 
       render :json => { :success => true, 
-                        :purchase_receival_entries => [@object] , 
-                        :total => @parent.active_purchase_receival_entries.count }  
+                        :delivery_entries => [@object] , 
+                        :total => @parent.active_delivery_entries.count }  
     else
       msg = {
         :success => false, 
@@ -28,14 +28,14 @@ class Api::PurchaseReceivalEntriesController < Api::BaseApiController
 
   def update
     
-    @object = PurchaseReceivalEntry.find_by_id params[:id] 
-    @parent = @object.purchase_receival 
-    @object.update_by_employee(current_user,  params[:purchase_receival_entry])
+    @object = DeliveryEntry.find_by_id params[:id] 
+    @parent = @object.delivery 
+    @object.update_by_employee(current_user,  params[:delivery_entry])
      
     if @object.errors.size == 0 
       render :json => { :success => true,   
-                        :purchase_receival_entries => [@object],
-                        :total => @parent.active_purchase_receival_entries.count  } 
+                        :delivery_entries => [@object],
+                        :total => @parent.active_delivery_entries.count  } 
     else
       msg = {
         :success => false, 
@@ -49,14 +49,14 @@ class Api::PurchaseReceivalEntriesController < Api::BaseApiController
   end
 
   def destroy
-    @object = PurchaseReceivalEntry.find(params[:id])
-    @parent = @object.purchase_receival 
+    @object = DeliveryEntry.find(params[:id])
+    @parent = @object.delivery 
     @object.delete(current_user)
 
     if ( @object.persisted? and @object.is_deleted ) or ( not @object.persisted? )
-      render :json => { :success => true, :total => @parent.active_purchase_receival_entries.count }  
+      render :json => { :success => true, :total => @parent.active_delivery_entries.count }  
     else
-      render :json => { :success => false, :total =>@parent.active_purchase_receival_entries.count }  
+      render :json => { :success => false, :total =>@parent.active_delivery_entries.count }  
     end
   end
 end

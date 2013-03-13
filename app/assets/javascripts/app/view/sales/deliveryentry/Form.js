@@ -1,6 +1,6 @@
-Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
+Ext.define('AM.view.sales.deliveryentry.Form', {
   extend: 'Ext.window.Window',
-  alias : 'widget.purchasereceivalentryform',
+  alias : 'widget.deliveryentryform',
 
   title : 'Add / Edit Entry',
   layout: 'fit',
@@ -17,19 +17,34 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 	},
 	
   initComponent: function() {
-	// get the parent id 
-		console.log("Inside the initComponent of the Form");
-		console.log( this.parentRecord  );
+
 		if( !this.parentRecord){ return; }
 	
 		var remoteJsonStore = Ext.create(Ext.data.JsonStore, {
-			storeId : 'purchase_order_entry_search',
-			fields	: ['id','item_name', 'purchase_order_entry_code', 'purchase_order_code' ],
+			storeId : 'sales_order_entry_search',
+			fields	: [
+				{
+					name : 'sales_order_entry_id',
+					mapping  :'id'
+				},
+				{
+					name : 'sales_order_entry_code',
+					mapping : 'code'
+				},
+				{
+					name : 'item_name',
+					mapping : 'item_name'
+				},
+				{
+					name : 'sales_order_code',
+					mapping : 'sales_order_code'
+				}
+			],
 			proxy  	: {
 				type : 'ajax',
-				url : 'api/search_purchase_order_entry',
+				url : 'api/search_sales_order_entry',
 				extraParams: {
-					vendor_id : this.parentRecord.get('vendor_id')
+					customer_id : this.parentRecord.get('customer_id')
 		    },
 				reader : {
 					type : 'json',
@@ -52,8 +67,8 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 				
 				{
 					xtype: 'displayfield',
-					fieldLabel: 'Purchase Receival',
-					name: 'purchase_receival_code',
+					fieldLabel: 'Sales Order',
+					name: 'delivery_code',
 					value: '10'
 				},
 				{
@@ -62,26 +77,26 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 					queryMode: 'remote',
 					forceSelection: true, 
 					displayField : 'item_name',
-					valueField : 'id',
+					valueField : 'sales_order_entry_id',
 					pageSize : 5,
 					minChars : 1, 
 					triggerAction: 'all',
 					store : remoteJsonStore, 
 					listConfig : {
 						getInnerTpl: function(){
-							return '<div data-qtip="{item_name}">' + 
-								'<div class="combo-name">{item_name}</div>' + 
-								'<div class="combo-full-address">{purchase_order_entry_code}</div>' + 
-								'<div class="combo-full-address">{purchase_order_code}</div>' + 
-							'</div>';
+							return  '<div data-qtip="{item_name}">' + 
+												'<div class="combo-name">{item_name}</div>' + 
+												'<div class="combo-full-address">{sales_order_entry_code}</div>' + 
+												'<div class="combo-full-address">{sales_order_code}</div>' +
+											'</div>';
 						}
 					},
-					name : 'purchase_order_entry_id'
+					name : 'sales_order_entry_id'
 				},
 				{
 	        xtype: 'textfield',
 	        fieldLabel: ' Quantity',
-					name : 'quantity',
+					name : 'quantity_sent',
 	      } 
 			]
     }];
@@ -100,24 +115,23 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 
 
 	setParentData: function( record ){
-		this.down('form').getForm().findField('purchase_receival_code').setValue(record.get('code')); 
+		this.down('form').getForm().findField('delivery_code').setValue(record.get('code')); 
 	},
 	
 	setComboBoxData : function( record){
-		console.log("In the PurchaseReceivalEntry Form");
-		console.log( record ) ;
+
 		var me = this; 
 		me.setLoading(true);
-		var comboBox = this.down('form').getForm().findField('purchase_order_entry_id'); 
+		var comboBox = this.down('form').getForm().findField('sales_order_entry_id'); 
 		
 		var store = comboBox.store; 
 		store.load({
 			params: {
-				selected_id : record.get("purchase_order_entry_id")
+				selected_id : record.get("sales_order_entry_id")
 			},
 			callback : function(records, options, success){
 				me.setLoading(false);
-				comboBox.setValue( record.get("purchase_order_entry_id"));
+				comboBox.setValue( record.get("sales_order_entry_id"));
 			}
 		});
 	}

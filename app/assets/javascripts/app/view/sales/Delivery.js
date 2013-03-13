@@ -11,10 +11,10 @@ Ext.define('AM.view.sales.Delivery', {
 			{
 				xtype : 'deliverylist' ,
 				flex : 1  
+			},
+			{
+				xtype : 'deliveryentrylist',
+				flex : 1 
 			}
-			// {
-			// 	xtype : 'deliveryentrylist',
-			// 	flex : 1 
-			// }
 		]
 });

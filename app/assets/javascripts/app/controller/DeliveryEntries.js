@@ -1,108 +1,109 @@
-Ext.define('AM.controller.Deliveries', {
+Ext.define('AM.controller.DeliveryEntries', {
   extend: 'Ext.app.Controller',
 
-  stores: ['Deliveries'],
-  models: ['Delivery'],
+  stores: ['DeliveryEntries', 'Deliveries'],
+  models: ['DeliveryEntry'],
 
   views: [
-    'sales.delivery.List',
-    'sales.delivery.Form',
-		'sales.deliveryentry.List'
+    'sales.deliveryentry.List',
+    'sales.deliveryentry.Form',
+		'sales.delivery.List'
   ],
 
   refs: [
 		{
 			ref: 'list',
-			selector: 'deliverylist'
+			selector: 'deliveryentrylist'
 		},
 		{
-			ref : 'deliveryEntryList',
-			selector : 'deliveryentrylist'
-		},
-		{
-			ref: 'viewport',
-			selector: 'vp'
+			ref : 'parentList',
+			selector : 'deliverylist'
 		}
 	],
 
   init: function() {
     this.control({
-      'deliverylist': {
+      'deliveryentrylist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange,
-				afterrender : this.loadObjectList,
+        selectionchange: this.selectionChange 
       },
-      'deliveryform button[action=save]': {
+      'deliveryentryform button[action=save]': {
         click: this.updateObject
       },
-      'deliverylist button[action=addObject]': {
+      'deliveryentrylist button[action=addObject]': {
         click: this.addObject
       },
-      'deliverylist button[action=editObject]': {
+      'deliveryentrylist button[action=editObject]': {
         click: this.editObject
       },
-      'deliverylist button[action=deleteObject]': {
+      'deliveryentrylist button[action=deleteObject]': {
         click: this.deleteObject
       },
-			'deliverylist button[action=confirmObject]': {
-        click: this.confirmObject
-      },
 
-
+			// monitor parent(delivery) update
+			'deliverylist' : {
+				'updated' : this.reloadStore,
+				'confirmed' : this.reloadStore,
+				'deleted' : this.cleanList
+			}
+		
     });
   },
 
-	confirmObject: function(){
-		var me  = this;
-		var record = this.getList().getSelectedObject();
+	reloadStore : function(record){
 		var list = this.getList();
-		me.getViewport().setLoading( true ) ;
+		var store = this.getDeliveryEntriesStore();
 		
-		if(!record){return;}
-		
-		Ext.Ajax.request({
-		    url: 'api/confirm_delivery',
-		    method: 'POST',
-		    params: {
-					id : record.get('id')
-		    },
-		    jsonData: {},
-		    success: function(result, request ) {
-						me.getViewport().setLoading( false );
-						list.getStore().load({
-							callback : function(records, options, success){
-								// this => refers to a store 
-								record = this.getById(record.get('id'));
-								// record = records.getById( record.get('id'))
-								list.fireEvent('confirmed', record);
-							}
-						});
-						
-		    },
-		    failure: function(result, request ) {
-						me.getViewport().setLoading( false ) ;
-		    }
+		store.load({
+			params : {
+				delivery_id : record.get('id')
+			}
 		});
+		
+		list.setObjectTitle(record);
 	},
-
-
+	
+	cleanList : function(){
+		var list = this.getList();
+		var store = this.getDeliveryEntriesStore();
+		
+		list.setTitle('');
+		// store.removeAll(); 
+		store.loadRecords([], {addRecords: false});
+	},
  
 
-	loadObjectList : function(me){
-		me.getStore().load();
-	},
-
   addObject: function() {
-    var view = Ext.widget('deliveryform');
-    view.show();
+		
+		// I want to get the currently selected item 
+		var record = this.getParentList().getSelectedObject();
+		if(!record){
+			return; 
+		}
+		 
+    var view = Ext.widget('deliveryentryform', {
+			parentRecord : record 
+		});
+		view.setParentData( record );
+    view.show(); 
   },
 
   editObject: function() {
+		var parentRecord = this.getParentList().getSelectedObject();
+		
     var record = this.getList().getSelectedObject();
-		if(!record){return;}
-    var view = Ext.widget('deliveryform');
-	
+		if(!record || !parentRecord){
+			return; 
+		}
+
+    var view = Ext.widget('deliveryentryform', {
+			parentRecord : parentRecord
+		});
+
     view.down('form').loadRecord(record);
+		view.setParentData( parentRecord );
+		console.log("selected record id: " + record.get('id'));
+		console.log("The selected poe id: " + record.get('purchase_order_entry_id'));
 		view.setComboBoxData(record); 
   },
 
@@ -110,13 +111,10 @@ Ext.define('AM.controller.Deliveries', {
     var win = button.up('window');
     var form = win.down('form');
 
-    var store = this.getDeliveriesStore();
-		var list = this.getList();
+		var parentRecord = this.getParentList().getSelectedObject();
+    var store = this.getDeliveryEntriesStore();
     var record = form.getRecord();
     var values = form.getValues();
-
-		 
-		
 
 		
 		if( record ){
@@ -124,19 +122,28 @@ Ext.define('AM.controller.Deliveries', {
 			 
 			form.setLoading(true);
 			record.save({
+				params : {
+					delivery_id : parentRecord.get('id')
+				},
 				success : function(record){
 					form.setLoading(false);
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					// form.fireEvent('item_quantity_changed');
+					store.load({
+						params: {
+							delivery_id : parentRecord.get('id')
+						}
+					});
+					
 					win.close();
-					list.fireEvent('updated', record );
 				},
 				failure : function(record,op ){
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
-					this.reject()
+					
+					this.reject(); 
 				}
 			});
 				
@@ -144,35 +151,53 @@ Ext.define('AM.controller.Deliveries', {
 		}else{
 			//  no record at all  => gonna create the new one 
 			var me  = this; 
-			var newObject = new AM.model.Delivery( values ) ;
+			var newObject = new AM.model.DeliveryEntry( values ) ;
 			
 			// learnt from here
 			// http://www.sencha.com/forum/showthread.php?137580-ExtJS-4-Sync-and-success-failure-processing
 			// form.mask("Loading....."); 
 			form.setLoading(true);
 			newObject.save({
+				params : {
+					delivery_id : parentRecord.get('id')
+				},
 				success: function(record){
 					//  since the grid is backed by store, if store changes, it will be updated
-					store.load();
+					store.load({
+						params: {
+							delivery_id : parentRecord.get('id')
+						}
+					});
+					// form.fireEvent('item_quantity_changed');
 					form.setLoading(false);
 					win.close();
-					list.fireEvent('updated', record);
-					
 				},
 				failure: function( record, op){
 					form.setLoading(false);
 					var message  = op.request.scope.reader.jsonData["message"];
 					var errors = message['errors'];
 					form.getForm().markInvalid(errors);
-					this.reject()
+					this.reject();
 				}
 			});
 		} 
   },
 
-  deleteObject: function() {
+  // deleteObject: function() {
+  //   var record = this.getList().getSelectedObject();
+  // 
+  //   if (record) {
+  //     var store = this.getDeliveryEntriesStore();
+  //     store.remove(record);
+  //     store.sync();
+  // 			this.getList().query('pagingtoolbar')[0].doRefresh();
+  //   }
+  // },
+
+	deleteObject: function() {
     var record = this.getList().getSelectedObject();
 		if(!record){return;}
+		var parent_id = record.get('delivery_id');
 		var list  = this.getList();
 		list.setLoading(true); 
 		
@@ -183,8 +208,12 @@ Ext.define('AM.controller.Deliveries', {
 					list.fireEvent('deleted');	
 					// this.getList().query('pagingtoolbar')[0].doRefresh();
 					// console.log("Gonna reload the shite");
-					// this.getDeliveriesStore.load();
-					list.getStore().load();
+					// this.getPurchaseOrdersStore.load();
+					list.getStore().load({
+						params : {
+							delivery_id : parent_id
+						}
+					});
 				},
 				failure : function(record,op ){
 					list.setLoading(false);
@@ -209,36 +238,14 @@ Ext.define('AM.controller.Deliveries', {
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
-		var record = this.getList().getSelectedObject();
-		
-		if(!record){
-			return; 
-		}
-		var deliveryEntryGrid = this.getDeliveryEntryList();
-		// deliveryEntryGrid.setTitle("Purchase Order: " + record.get('code'));
-		deliveryEntryGrid.setObjectTitle( record ) ;
-		deliveryEntryGrid.getStore().load({
-			params : {
-				delivery_id : record.get('id')
-			},
-			callback : function(records, options, success){
-				
-				var totalObject  = records.length;
-				if( totalObject ===  0 ){
-					deliveryEntryGrid.enableRecordButtons(); 
-				}else{
-					deliveryEntryGrid.enableRecordButtons(); 
-				}
-			}
-		});
-		
+
+		// var record = this.getList().getSelectedObject();
 
     if (selections.length > 0) {
       grid.enableRecordButtons();
     } else {
       grid.disableRecordButtons();
     }
-  } 
-	
+  }
 
 });

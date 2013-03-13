@@ -54,8 +54,20 @@ ActiveRecord::Schema.define(:version => 20130313060741) do
   end
 
   create_table "delivery_entries", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "creator_id"
+    t.integer  "sales_order_entry_id"
+    t.integer  "delivery_id"
+    t.string   "code"
+    t.integer  "quantity_sent",                                          :default => 0
+    t.integer  "quantity_confirmed",                                     :default => 0
+    t.integer  "quantity_returned",                                      :default => 0
+    t.decimal  "quantity_returned_weight", :precision => 7, :scale => 2, :default => 0.0
+    t.integer  "quantity_lost",                                          :default => 0
+    t.boolean  "is_deleted",                                             :default => false
+    t.boolean  "is_confirmed",                                           :default => false
+    t.boolean  "is_finalized",                                           :default => false
+    t.datetime "created_at",                                                                :null => false
+    t.datetime "updated_at",                                                                :null => false
   end
 
   create_table "employees", :force => true do |t|
