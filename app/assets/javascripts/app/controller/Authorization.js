@@ -121,7 +121,7 @@ Ext.define("AM.controller.Authorization", {
                     },
 										{ 
                         text:'Pengiriman', 
-                        viewClass:'Bravo', 
+                        viewClass:'AM.view.sales.Delivery', 
                         leaf:true, 
                         iconCls:'text' 
                     },
