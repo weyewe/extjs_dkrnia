@@ -15,7 +15,6 @@ class CreateDeliveryEntries < ActiveRecord::Migration
       t.integer     :quantity_confirmed  , :default =>0  # => migrate the on_delivery to fulfilled 
       
       t.integer     :quantity_returned, :default => 0  # => sales_return
-      t.decimal     :quantity_returned_weight , :precision => 7, :scale => 2 , :default => 0 
       
       t.integer     :quantity_lost  , :default => 0   # => sales_lost 
        

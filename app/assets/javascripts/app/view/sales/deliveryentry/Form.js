@@ -67,7 +67,7 @@ Ext.define('AM.view.sales.deliveryentry.Form', {
 				
 				{
 					xtype: 'displayfield',
-					fieldLabel: 'Sales Order',
+					fieldLabel: 'Delivery',
 					name: 'delivery_code',
 					value: '10'
 				},

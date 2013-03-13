@@ -10,7 +10,7 @@ Ext.define('AM.view.sales.deliveryentry.List' ,{
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
 			{ header: 'Sales Order',  dataIndex: 'sales_order_code',  flex: 1 , sortable: false},
 			{ header: 'Item',  dataIndex: 'item_name',  flex: 1 , sortable: false},
-			{ header: 'Quantity',  dataIndex: 'quantity_sent',  flex: 1 , sortable: false} 
+			{ header: 'Dikirim',  dataIndex: 'quantity_sent',  flex: 1 , sortable: false}
 		];
 
 		this.addObjectButton = new Ext.Button({
@@ -32,11 +32,9 @@ Ext.define('AM.view.sales.deliveryentry.List' ,{
 		});
 
 	 
- 
 
 
-
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton ];
+		this.tbar = [this.addObjectButton, this.editObjectButton,  this.deleteObjectButton ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,
@@ -67,5 +65,5 @@ Ext.define('AM.view.sales.deliveryentry.List' ,{
 	
 	setObjectTitle : function(record){
 		this.setTitle("Delivery: " + record.get("code"));
-	}
+	}	 
 });

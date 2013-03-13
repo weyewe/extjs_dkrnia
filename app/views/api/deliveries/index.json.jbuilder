@@ -8,4 +8,5 @@ json.deliveries @objects do |object|
 	json.customer_id   object.customer_id
 	json.id 				object.id 
 	json.is_confirmed object.is_confirmed 
+	json.is_finalized object.is_finalized 
 end

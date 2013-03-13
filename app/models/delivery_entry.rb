@@ -6,6 +6,8 @@ class DeliveryEntry < ActiveRecord::Base
 
   belongs_to :sales_order_entry
     
+  has_one :sales_return_entry 
+  has_one :delivery_lost_entry # goods lost in delivery 
   
   validates_presence_of :sales_order_entry_id
   validates_presence_of :creator_id
@@ -216,7 +218,7 @@ class DeliveryEntry < ActiveRecord::Base
       self.is_confirmed = true 
       self.save
       self.reload 
-
+      self.generate_code 
       self.update_delivery_stock_mutations
       
     end
@@ -305,6 +307,16 @@ class DeliveryEntry < ActiveRecord::Base
       self.save 
       self.update_delivery_stock_mutations 
     end
+  end
+  
+  def quantity_returned
+    return 0 if self.sales_return_entry.nil? 
+    return self.sales_return_entry.quantity
+  end
+  
+  def quantity_lost
+    return 0 if self.delivery_lost_entry.nil? 
+    return self.delivery_lost_entry.quantity
   end
   
 =begin

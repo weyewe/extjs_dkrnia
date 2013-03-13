@@ -11,7 +11,7 @@ Ext.define('AM.view.sales.delivery.List' ,{
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
 			{ header: 'Customer',  dataIndex: 'customer_name',  flex: 1 , sortable: false},
 			{ header: 'Employee',  dataIndex: 'employee_name',  flex: 1 , sortable: false},
-			{ header: 'Confirmed?',  dataIndex: 'is_confirmed',  flex: 1 , sortable: false},
+			{ header: 'Confirmed?',  dataIndex: 'is_confirmed',  flex: 1 , sortable: false}  
 		];
 
 		this.addObjectButton = new Ext.Button({
@@ -36,10 +36,10 @@ Ext.define('AM.view.sales.delivery.List' ,{
 			action: 'confirmObject',
 			disabled: true
 		});
+	 
 
 
-
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, this.confirmObjectButton ];
+		this.tbar = [this.addObjectButton, this.editObjectButton, this.confirmObjectButton,  this.deleteObjectButton ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,

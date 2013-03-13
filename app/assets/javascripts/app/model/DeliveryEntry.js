@@ -9,9 +9,13 @@ Ext.define('AM.model.DeliveryEntry', {
 			
 			// purchase order entry  related 
 			{ name: 'quantity_sent',type: 'int'}, 
+			// sent using delivery. give no shit. 
+			// if there is lost delivery, create a lost delivery form. 
 			{ name: 'sales_order_entry_id', type: 'int'},
 			{ name: 'sales_order_code', type: 'string'},
 			{ name: 'sales_order_entry_code', type: 'string'},
+			
+			{ name: 'is_confirmed',type: 'boolean', defaultValue: false }  
   	],
 
 	 

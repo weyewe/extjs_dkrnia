@@ -40,6 +40,7 @@ Ext.define('AM.controller.DeliveryEntries', {
         click: this.deleteObject
       },
 
+
 			// monitor parent(delivery) update
 			'deliverylist' : {
 				'updated' : this.reloadStore,
@@ -49,6 +50,8 @@ Ext.define('AM.controller.DeliveryEntries', {
 		
     });
   },
+ 
+	
 
 	reloadStore : function(record){
 		var list = this.getList();
@@ -102,8 +105,6 @@ Ext.define('AM.controller.DeliveryEntries', {
 
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );
-		console.log("selected record id: " + record.get('id'));
-		console.log("The selected poe id: " + record.get('purchase_order_entry_id'));
 		view.setComboBoxData(record); 
   },
 
@@ -238,13 +239,19 @@ Ext.define('AM.controller.DeliveryEntries', {
 
   selectionChange: function(selectionModel, selections) {
     var grid = this.getList();
+		var record = this.getList().getSelectedObject();
+		if(!record){return;}
+		
+		
 
 		// var record = this.getList().getSelectedObject();
 
     if (selections.length > 0) {
-      grid.enableRecordButtons();
+      grid.enableRecordButtons(record);
+			grid.enableFinalizeButtons(record);
     } else {
       grid.disableRecordButtons();
+			grid.enableFinalizeButtons();
     }
   }
 

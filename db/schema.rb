@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130313060741) do
+ActiveRecord::Schema.define(:version => 20130313135759) do
 
   create_table "companies", :force => true do |t|
     t.string   "name"
@@ -58,16 +58,37 @@ ActiveRecord::Schema.define(:version => 20130313060741) do
     t.integer  "sales_order_entry_id"
     t.integer  "delivery_id"
     t.string   "code"
-    t.integer  "quantity_sent",                                          :default => 0
-    t.integer  "quantity_confirmed",                                     :default => 0
-    t.integer  "quantity_returned",                                      :default => 0
-    t.decimal  "quantity_returned_weight", :precision => 7, :scale => 2, :default => 0.0
-    t.integer  "quantity_lost",                                          :default => 0
-    t.boolean  "is_deleted",                                             :default => false
-    t.boolean  "is_confirmed",                                           :default => false
-    t.boolean  "is_finalized",                                           :default => false
-    t.datetime "created_at",                                                                :null => false
-    t.datetime "updated_at",                                                                :null => false
+    t.integer  "quantity_sent",        :default => 0
+    t.integer  "quantity_confirmed",   :default => 0
+    t.integer  "quantity_returned",    :default => 0
+    t.integer  "quantity_lost",        :default => 0
+    t.boolean  "is_deleted",           :default => false
+    t.boolean  "is_confirmed",         :default => false
+    t.boolean  "is_finalized",         :default => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
+  end
+
+  create_table "delivery_lost_entries", :force => true do |t|
+    t.integer  "delivery_lost_id"
+    t.integer  "delivery_entry_id"
+    t.string   "code"
+    t.integer  "quantity"
+    t.boolean  "is_confirmed",      :default => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+  end
+
+  create_table "delivery_losts", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "code"
+    t.integer  "delivery_id"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.boolean  "is_deleted",   :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "employees", :force => true do |t|
@@ -185,6 +206,28 @@ ActiveRecord::Schema.define(:version => 20130313060741) do
     t.boolean  "is_deleted",                                        :default => false
     t.datetime "created_at",                                                           :null => false
     t.datetime "updated_at",                                                           :null => false
+  end
+
+  create_table "sales_return_entries", :force => true do |t|
+    t.integer  "sales_return_id"
+    t.integer  "delivery_entry_id"
+    t.string   "code"
+    t.integer  "quantity"
+    t.boolean  "is_confirmed",      :default => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+  end
+
+  create_table "sales_returns", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "code"
+    t.integer  "delivery_id"
+    t.boolean  "is_confirmed", :default => false
+    t.integer  "confirmer_id"
+    t.datetime "confirmed_at"
+    t.boolean  "is_deleted",   :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   create_table "stock_entries", :force => true do |t|

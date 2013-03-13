@@ -7,7 +7,7 @@ Ext.define('AM.model.Delivery', {
 			{ name: 'employee_name', type: 'string'},
 			{ name: 'customer_id', type: 'int' },
 			{ name: 'customer_name', type: 'string'},
-			{ name: 'is_confirmed',type: 'boolean', defaultValue: false } 
+			{ name: 'is_confirmed',type: 'boolean', defaultValue: false }  
   	],
 
 	 

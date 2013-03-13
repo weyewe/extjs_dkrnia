@@ -2,7 +2,7 @@ class Api::DeliveryEntriesController < Api::BaseApiController
   
   def index
     @parent = Delivery.find_by_id params[:delivery_id]
-    @objects = @parent.active_delivery_entries.joins( :delivery, :sales_order_entry =>[:item]).page(params[:page]).per(params[:limit]).order("id DESC")
+    @objects = @parent.active_delivery_entries.joins( :delivery, :sales_order_entry =>[:item, :sales_order]).page(params[:page]).per(params[:limit]).order("id DESC")
     @total = @parent.active_delivery_entries.count
   end
 
@@ -47,6 +47,30 @@ class Api::DeliveryEntriesController < Api::BaseApiController
       render :json => msg 
     end
   end
+  
+  def update_post_delivery
+    @object = DeliveryEntry.find_by_id params[:id]
+    @parent = @object.delivery
+    
+    @object.update_post_delivery( current_user, params[:delivery_entry] )
+    
+    if @object.errors.size == 0 
+      render :json => { :success => true,   
+                        :delivery_entries => [@object],
+                        :total => @parent.active_delivery_entries.count  } 
+    else
+      msg = {
+        :success => false, 
+        :message => {
+          :errors => extjs_error_format( @object.errors )  
+        }
+      }
+      
+      render :json => msg 
+    end
+  end
+  
+  
 
   def destroy
     @object = DeliveryEntry.find(params[:id])

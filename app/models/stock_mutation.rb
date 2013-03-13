@@ -123,104 +123,107 @@ class StockMutation < ActiveRecord::Base
     end
   end
   
-  def self.create_or_update_delivery_return_stock_mutation( delivery_entry ) 
-    return nil if not delivery_entry.is_finalized?
+  def self.create_or_update_delivery_return_stock_mutation( sales_return_entry ) 
+    return nil if not  sales_return_entry.is_confirmed? 
+    
     
     past_object = self.where(
-      :source_document_entry => delivery_entry.class.to_s,
-      :source_document_entry_id => delivery_entry.id,
+      :source_document_entry => sales_return_entry.class.to_s,
+      :source_document_entry_id => sales_return_entry.id,
       :mutation_case => MUTATION_CASE[:delivery_returned],
       :mutation_status => MUTATION_STATUS[:addition]
     ).first 
+    item = sales_return_entry.delivery_entry.sales_order_entry.item 
     
-    if past_object.nil? and delivery_entry.quantity_returned != 0 
+    if past_object.nil? and sales_return_entry.quantity  != 0 
       new_object = self.new
-      new_object.creator_id               = delivery_entry.delivery.creator_id
-      new_object.quantity                 = delivery_entry.quantity_returned
-      new_object.source_document_entry_id = delivery_entry.id 
-      new_object.source_document_id       = delivery_entry.delivery.id 
-      new_object.source_document_entry    = delivery_entry.class.to_s
-      new_object.source_document          = delivery_entry.delivery.class.to_s
-      new_object.item_id                  = delivery_entry.item_id 
+      new_object.creator_id               = sales_return_entry.sales_return.creator_id
+      new_object.quantity                 = sales_return_entry.quantity 
+      new_object.source_document_entry_id = sales_return_entry.id 
+      new_object.source_document_id       = sales_return_entry.sales_return.id 
+      new_object.source_document_entry    = sales_return_entry.class.to_s
+      new_object.source_document          = sales_return_entry.sales_return.class.to_s
+      new_object.item_id                  = item.id 
       new_object.mutation_case            = MUTATION_CASE[:delivery_returned] 
       new_object.mutation_status          = MUTATION_STATUS[:addition]
       new_object.save 
-    elsif not past_object.nil? and delivery_entry.quantity_returned !=  0
+    elsif not past_object.nil? and sales_return_entry.quantity  !=  0
      
-      past_object.quantity  = delivery_entry.quantity_returned
-      past_object.item_id = delivery_entry.item_id 
+      past_object.quantity  = sales_return_entry.quantity 
+      past_object.item_id = item.id  
       past_object.save 
-    elsif not past_object.nil? and delivery_entry.quantity_returned ==  0
+    elsif not past_object.nil? and sales_return_entry.quantity  ==  0
       past_object.destroy 
     end
   end
    
  
-  def self.create_or_update_delivery_lost_stock_mutation( delivery_entry ) 
-    return nil if not delivery_entry.is_finalized?
+  def self.create_or_update_delivery_lost_stock_mutation( delivery_lost_entry ) 
+    return nil if not delivery_lost_entry.is_confirmed? 
     past_object = self.where(
-     :source_document_entry => delivery_entry.class.to_s,
-     :source_document_entry_id => delivery_entry.id,
+     :source_document_entry => delivery_lost_entry.class.to_s,
+     :source_document_entry_id => delivery_lost_entry.id,
      :mutation_case => MUTATION_CASE[:delivery_lost],
      :mutation_status => MUTATION_STATUS[:deduction]
     ).first 
 
-    if past_object.nil? and delivery_entry.quantity_lost != 0 
+    item = delivery_lost_entry.delivery_entry.sales_order_entry.item 
+    if past_object.nil? and delivery_lost_entry.quantity != 0 
      new_object = self.new
-     new_object.creator_id               = delivery_entry.delivery.creator_id
-     new_object.quantity                 = delivery_entry.quantity_lost
-     new_object.source_document_entry_id = delivery_entry.id 
-     new_object.source_document_id       = delivery_entry.delivery.id 
-     new_object.source_document_entry    = delivery_entry.class.to_s
-     new_object.source_document          = delivery_entry.delivery.class.to_s
-     new_object.item_id                  = delivery_entry.item_id 
+     new_object.creator_id               = delivery_lost_entry.delivery_lost.creator_id
+     new_object.quantity                 = delivery_lost_entry.quantity
+     new_object.source_document_entry_id = delivery_lost_entry.id 
+     new_object.source_document_id       = delivery_lost_entry.delivery_lost.id 
+     new_object.source_document_entry    = delivery_lost_entry.class.to_s
+     new_object.source_document          = delivery_lost_entry.delivery_lost.class.to_s
+     new_object.item_id                  = item.id  
      new_object.mutation_case            = MUTATION_CASE[:delivery_lost] 
      new_object.mutation_status          = MUTATION_STATUS[:deduction]
      new_object.save 
-    elsif not past_object.nil? and delivery_entry.quantity_lost !=  0
+    elsif not past_object.nil? and delivery_lost_entry.quantity !=  0
 
-     past_object.quantity = delivery_entry.quantity_lost
-     past_object.item_id = delivery_entry.item_id 
+     past_object.quantity = delivery_lost_entry.quantity
+     past_object.item_id = item.id 
      past_object.save 
-    elsif not past_object.nil? and delivery_entry.quantity_lost ==  0
+    elsif not past_object.nil? and delivery_lost_entry.quantity ==  0
      past_object.destroy 
     end
   end
   
-  def StockMutation.create_delivery_return_stock_mutation( delivery_entry  ) 
-    return nil if delivery_entry.quantity_returned == 0 
-    new_object = StockMutation.new 
-    
-    new_object.creator_id               = delivery_entry.delivery.creator_id
-    new_object.quantity                 = delivery_entry.quantity_returned 
-    new_object.source_document_entry_id = delivery_entry.id 
-    new_object.source_document_id       = delivery_entry.delivery.id 
-    new_object.source_document_entry    = delivery_entry.class.to_s
-    new_object.source_document          = delivery_entry.delivery.class.to_s
-    new_object.item_id                  = delivery_entry.item_id 
-    new_object.mutation_case            = MUTATION_CASE[:delivery_returned] 
-    new_object.mutation_status          = MUTATION_STATUS[:addition]  
-    
-    new_object.save
-  end
-  
-  def StockMutation.create_delivery_lost_stock_mutation( delivery_entry  ) 
-    return nil if delivery_entry.quantity_lost == 0 
-    new_object = StockMutation.new 
-    
-    new_object.creator_id               = delivery_entry.delivery.creator_id
-    new_object.quantity                 = delivery_entry.quantity_lost 
-    new_object.source_document_entry_id = delivery_entry.id 
-    new_object.source_document_id       = delivery_entry.delivery.id 
-    new_object.source_document_entry    = delivery_entry.class.to_s
-    new_object.source_document          = delivery_entry.delivery.class.to_s
-    new_object.item_id                  = delivery_entry.item_id 
-    new_object.mutation_case            = MUTATION_CASE[:delivery_lost] 
-    new_object.mutation_status          = MUTATION_STATUS[:deduction]  
-    
-    new_object.save
-  end
-  
+  # def StockMutation.create_delivery_return_stock_mutation( delivery_entry  ) 
+  #   return nil if delivery_entry.quantity_returned == 0 
+  #   new_object = StockMutation.new 
+  #   
+  #   new_object.creator_id               = delivery_entry.delivery.creator_id
+  #   new_object.quantity                 = delivery_entry.quantity_returned 
+  #   new_object.source_document_entry_id = delivery_entry.id 
+  #   new_object.source_document_id       = delivery_entry.delivery.id 
+  #   new_object.source_document_entry    = delivery_entry.class.to_s
+  #   new_object.source_document          = delivery_entry.delivery.class.to_s
+  #   new_object.item_id                  = delivery_entry.item_id 
+  #   new_object.mutation_case            = MUTATION_CASE[:delivery_returned] 
+  #   new_object.mutation_status          = MUTATION_STATUS[:addition]  
+  #   
+  #   new_object.save
+  # end
+  # 
+  # def StockMutation.create_delivery_lost_stock_mutation( delivery_entry  ) 
+  #   return nil if delivery_entry.quantity_lost == 0 
+  #   new_object = StockMutation.new 
+  #   
+  #   new_object.creator_id               = delivery_entry.delivery.creator_id
+  #   new_object.quantity                 = delivery_entry.quantity_lost 
+  #   new_object.source_document_entry_id = delivery_entry.id 
+  #   new_object.source_document_id       = delivery_entry.delivery.id 
+  #   new_object.source_document_entry    = delivery_entry.class.to_s
+  #   new_object.source_document          = delivery_entry.delivery.class.to_s
+  #   new_object.item_id                  = delivery_entry.item_id 
+  #   new_object.mutation_case            = MUTATION_CASE[:delivery_lost] 
+  #   new_object.mutation_status          = MUTATION_STATUS[:deduction]  
+  #   
+  #   new_object.save
+  # end
+  # 
   
   
   

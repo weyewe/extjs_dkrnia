@@ -1,19 +1,15 @@
-class Delivery < ActiveRecord::Base
+class DeliveryLost < ActiveRecord::Base
   include StockMutationDocument
   # attr_accessible :title, :body
   validates_presence_of :creator_id
-  validates_presence_of :employee_id 
+  validates_presence_of :delivery_id  
+  validates_uniqueness_of :delivery_id 
   
+  has_many :delivery_lost_entries  
+  belongs_to :delivery   
   
-    
-  has_many :delivery_entries 
-  belongs_to :employee 
-  belongs_to :customer 
-  
-   
-   
   def self.active_objects
-    self.where(:is_deleted => false ).order("created_at DESC")
+    self.where(:is_deleted => false ).order("id DESC")
   end
   
   def delete(employee) 
@@ -29,11 +25,9 @@ class Delivery < ActiveRecord::Base
   end
   
   def post_confirm_delete( employee) 
-     
-    # if there is sales_return or sales_lost , you must destroy those 2. 
-    
-    self.delivery_entries.each do |de|
-      de.delete( employee ) 
+      
+    self.delivery_lost_entries.each do |dle|
+      dle.delete( employee ) 
     end 
     
     self.is_deleted = true 
@@ -43,16 +37,16 @@ class Delivery < ActiveRecord::Base
    
   
   
-  def active_delivery_entries 
-    self.delivery_entries.where(:is_deleted => false ).order("created_at DESC")
+  def active_delivery_lost_entries 
+    self.delivery_lost_entries.where(:is_deleted => false ).order("id DESC")
   end
   
   def update_by_employee( employee, params ) 
     if self.is_confirmed?
       return self
     end
-    self.employee_id = params[:employee_id]
-    self.customer_id = params[:customer_id]
+    
+    self.delivery_id  = params[:delivery_id]
     self.save
     return self 
   end
@@ -66,12 +60,8 @@ class Delivery < ActiveRecord::Base
     
     new_object = self.new
     new_object.creator_id = employee.id
-    new_object.employee_id = params[:employee_id]
-    new_object.customer_id = params[:customer_id]
-    new_object.delivery_date = params[:delivery_date]
-    # today_date_time = DateTime.now 
-    # 
-    # new_object.receival_date   = 
+    new_object.delivery_id = params[:delivery_id]
+
     
     if new_object.save
       new_object.generate_code
@@ -119,7 +109,7 @@ class Delivery < ActiveRecord::Base
   
   def confirm(employee) 
     return nil if employee.nil? 
-    return nil if self.active_delivery_entries.count == 0 
+    return nil if self.active_delivery_lost_entries.count == 0 
     return nil if self.is_confirmed == true  
     
     # transaction block to confirm all the sales item  + sales receival confirmation 
@@ -129,41 +119,13 @@ class Delivery < ActiveRecord::Base
       self.is_confirmed = true 
       self.save 
       self.generate_code
-      self.delivery_entries.each do |de|
-        de.confirm 
+      self.delivery_lost_entries.each do |dle|
+        dle.confirm 
       end
     end 
   end
   
-  
-  def finalize(employee)
-    return nil if employee.nil? 
-    return nil if self.is_confirmed == false 
-    return nil if self.is_finalized == true  
-    
-    # transaction block to confirm all the sales item  + sales order confirmation 
-
-    ActiveRecord::Base.transaction do
-      self.finalizer_id = employee.id 
-      self.finalized_at = DateTime.now 
-      self.is_finalized = true 
-      self.save 
-      
-      
-      if  self.errors.size != 0  
-        raise ActiveRecord::Rollback, "Call tech support!" 
-        # puts "Fuck, errors.size!= 0"
-        return self
-      end
-
-      self.reload 
-      self.delivery_entries.each do |delivery_entry|
-        delivery_entry.finalize 
-      end
-    
-    end 
-  end
-  
+   
   
 =begin
   Sales Invoice Printing

@@ -38,6 +38,7 @@ ExtjsDikarunia::Application.routes.draw do
     resources :deliveries 
     match 'confirm_delivery' => 'deliveries#confirm', :as => :confirm_delivery, :method => :post
     resources :delivery_entries 
+    match 'update_post_delivery' => 'delivery_entries#update_post_delivery', :as => :update_post_delivery, :method => :post
   end
 
 end
