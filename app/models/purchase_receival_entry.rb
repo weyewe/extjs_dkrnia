@@ -17,7 +17,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
    
   validate :quantity_must_not_less_than_zero 
   validate :quantity_must_not_exceed_the_ordered_quantity
-  validate :unique_purchase_order_entry 
+  validate :entry_uniqueness 
   
   after_save :update_item_pending_receival, :update_purchase_order_entry_fulfilment_status, :update_item_statistics
   after_destroy :update_item_pending_receival , :update_purchase_order_entry_fulfilment_status, :update_item_statistics
@@ -66,7 +66,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
     end
   end   
   
-  def unique_purchase_order_entry
+  def entry_uniqueness
     purchase_order_entry = self.purchase_order_entry 
     return nil if purchase_order_entry.nil? 
     

@@ -45,9 +45,12 @@ class PurchaseOrderEntry < ActiveRecord::Base
  
     if not self.persisted? and purchase_order_entry_count != 0
       errors.add(:item_id , msg ) 
-    elsif self.persisted? and purchase_order_entry_count > 1 
+    elsif self.persisted? and not self.item_id_changed? and purchase_order_entry_count > 1 
       errors.add(:item_id , msg ) 
+    elsif self.persisted? and  self.item_id_changed? and purchase_order_entry_count  != 0 
+      errors.add(:item_id , msg )
     end
+   
   end
  
   # this is called when there is change in the purchase_receival_entry#purchase_order_entry
