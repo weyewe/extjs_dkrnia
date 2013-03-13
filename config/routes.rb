@@ -7,6 +7,7 @@ ExtjsDikarunia::Application.routes.draw do
     match 'authenticate_auth_token' => 'sessions#authenticate_auth_token', :as => :authenticate_auth_token
     match 'update_password' => "passwords#update" , :as => :update_password, :method => :put
     
+    match 'search_customer' => 'customers#search', :as => :search_customer, :method => :get
     match 'search_employee' => 'employees#search', :as => :search_employee, :method => :get
     match 'search_vendor' => 'vendors#search', :as => :search_vendor, :method => :get
     match 'search_item' => 'items#search', :as => :search_items, :method => :get
@@ -26,6 +27,11 @@ ExtjsDikarunia::Application.routes.draw do
     resources :purchase_receivals
     match 'confirm_purchase_receival' => 'purchase_receivals#confirm', :as => :confirm_purchase_receival, :method => :post 
     resources :purchase_receival_entries
+    
+    
+    resources :sales_orders 
+    match 'confirm_sales_order' => 'sales_orders#confirm', :as => :confirm_sales_order, :method => :post
+    resources :sales_order_entries
     
     resources :deliveries 
   end
