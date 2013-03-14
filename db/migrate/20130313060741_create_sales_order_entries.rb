@@ -10,9 +10,11 @@ class CreateSalesOrderEntries < ActiveRecord::Migration
       t.integer :item_id 
 
        
-     t.boolean :is_confirmed, :default => false  
+      t.boolean :is_fulfilled, :default => false 
+      
+      t.boolean :is_confirmed, :default => false  
      
-     t.boolean :is_deleted, :default => false
+      t.boolean :is_deleted, :default => false
       t.timestamps
     end
   end

@@ -9,6 +9,8 @@ class Item < ActiveRecord::Base
   has_many :stock_mutations 
   has_many :purchase_order_entries 
   has_many :purchase_receival_entries 
+  has_many :sales_order_entries 
+  has_many :delivery_entries 
    
   validates_presence_of :name ,  :supplier_code, :customer_code #  , :item_category_id ,
   
@@ -138,8 +140,8 @@ class Item < ActiveRecord::Base
   end
   
   def update_pending_delivery
-    self.pending_receival = self.sales_order_entries.where(:is_confirmed => true ).sum("quantity") - 
-              self.delivery_entries.where(:is_confirmed => true ).sum("quantity")
+    self.pending_delivery = self.sales_order_entries.where(:is_confirmed => true ).sum("quantity") - 
+              self.delivery_entries.where(:is_confirmed => true ).sum("quantity_confirmed")
     self.save
   end
 end

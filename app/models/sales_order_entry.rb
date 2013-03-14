@@ -3,10 +3,23 @@ class SalesOrderEntry < ActiveRecord::Base
   belongs_to :item 
   
   validates_presence_of :item_id 
-  validates_presence_of :quantity 
+  validates_presence_of :quantity
+  
+  has_many :delivery_entries  
   
   validate :entry_uniqueness
   validate :quantity_must_not_less_than_zero
+  
+  after_save :update_item_pending_delivery
+  after_destroy :update_item_pending_delivery
+  
+  def update_item_pending_delivery
+    return if not self.is_confirmed?
+    item = self.item 
+    return if item.nil? 
+    item.reload 
+    item.update_pending_delivery
+  end
   
   def quantity_must_not_less_than_zero
     if quantity.present? and quantity <= 0 
@@ -116,11 +129,17 @@ class SalesOrderEntry < ActiveRecord::Base
     end
     
     if  is_item_changed
+      if self.delivery_entries.count != 0 
+        self.errors.add(:item_id , "Sudah ada pengiriman barang" )
+        return self 
+      end
+      old_item = self.item
       self.item_id                 =  params[:item_id]
       self.quantity                = params[:quantity]
 
       self.save 
       return self if self.errors.size != 0 
+      old_item.update_pending_delivery
     end
     
     if is_quantity_changed
@@ -128,15 +147,21 @@ class SalesOrderEntry < ActiveRecord::Base
       self.save
     end
     
-    
-    # update the pending delivery in the item 
-    
-    # stock_mutation.purchase_receival_change_item( self )  if not self.stock_mutation.nil?
-    # 
-    # if purchase_order_entry.id != old_purchase_order_entry.id 
-    #   old_purchase_order_entry.reload 
-    #   old_purchase_order_entry.update_fulfillment_status
-    # end
+    self.update_fulfillment_status
+  end
+  
+  def update_fulfillment_status
+    if self.is_confirmed? 
+      self.reload
+      fulfilled = self.delivery_entries.where(:is_confirmed => true).sum("quantity_confirmed")
+      if fulfilled >= self.quantity
+        self.is_fulfilled = true 
+        self.save 
+      else
+        self.is_fulfilled = false
+        self.save 
+      end
+    end
   end
   
   def generate_code
@@ -184,5 +209,15 @@ class SalesOrderEntry < ActiveRecord::Base
     
     
     # update the pending delivery 
+  end
+  
+  def pending_delivery
+    self.quantity - self.delivery_entries.where(:is_confirmed => true).sum("quantity_confirmed")
+  end
+  
+  def max_delivery_quantity( delivery_entry )
+    delivery_entry = DeliveryEntry.find_by_id( delivery_entry.id )
+    self.quantity - self.delivery_entries.where(:is_confirmed => true).sum("quantity_confirmed") + 
+      delivery_entry.quantity_confirmed 
   end
 end

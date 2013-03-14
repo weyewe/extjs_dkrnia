@@ -114,7 +114,7 @@ describe PurchaseReceival do
     @po.is_confirmed.should be_true 
   end
   
-  it 'should create sales order' do
+  it 'should create purchase receival' do
     @pr = PurchaseReceival.create_by_employee(@admin,{
       :vendor_id => @vendor.id 
     } )
@@ -299,9 +299,17 @@ describe PurchaseReceival do
           @test_item1.reload
           @initial_ready =  @test_item1.ready 
           @initial_pending_receival = @test_item1.pending_receival 
-          quantity = @pr_entry1.quantity 
+          quantity = @pr_entry1.quantity
+          source_document_entry =  @pr_entry1.class.to_s
+          source_document_entry_id = @pr_entry1.id 
           @pr_entry1.delete(@admin)
-          @pr_entry1.persisted?.should be_false 
+          @pr_entry1.persisted?.should be_false
+          
+          StockMutation.where(
+            :source_document_entry_id => source_document_entry_id ,
+            :source_document_entry => source_document_entry
+          ).count.should == 0 
+          
           @test_item1.reload
           
           @final_ready = @test_item1.ready

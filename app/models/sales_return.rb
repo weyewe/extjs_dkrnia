@@ -8,6 +8,18 @@ class SalesReturn < ActiveRecord::Base
   has_many :sales_return_entries  
   belongs_to :delivery   
   
+  validate :delivery_must_be_confirmed
+  
+  
+  
+  def delivery_must_be_confirmed
+    return nil if self.delivery_id.nil?
+    
+    if not delivery.is_confirmed?
+      errors.add(:delivery_id, "Delivery harus dikonfirmasi dahulu")
+    end
+  end
+  
   def self.active_objects
     self.where(:is_deleted => false ).order("created_at DESC")
   end
@@ -27,7 +39,7 @@ class SalesReturn < ActiveRecord::Base
   
   
   def active_sales_return_entries 
-    self.sales_return_entries.where(:is_deleted => false ).order("created_at DESC")
+    self.sales_return_entries.order("created_at DESC")
   end
   
   def update_by_employee( employee, params ) 

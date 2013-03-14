@@ -4,6 +4,7 @@ class CreateDeliveryEntries < ActiveRecord::Migration
       t.integer :creator_id 
       t.integer :sales_order_entry_id 
       
+      t.integer :item_id 
       t.integer :delivery_id  # Surat Jalan 
       t.string  :code 
  

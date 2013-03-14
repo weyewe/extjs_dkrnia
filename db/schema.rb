@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20130314032106) do
   create_table "delivery_entries", :force => true do |t|
     t.integer  "creator_id"
     t.integer  "sales_order_entry_id"
+    t.integer  "item_id"
     t.integer  "delivery_id"
     t.string   "code"
     t.integer  "quantity_sent",        :default => 0
@@ -70,6 +71,7 @@ ActiveRecord::Schema.define(:version => 20130314032106) do
   end
 
   create_table "delivery_lost_entries", :force => true do |t|
+    t.integer  "creator_id"
     t.integer  "delivery_lost_id"
     t.integer  "delivery_entry_id"
     t.string   "code"
@@ -201,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20130314032106) do
     t.string   "code"
     t.integer  "quantity"
     t.integer  "item_id"
+    t.boolean  "is_fulfilled",   :default => false
     t.boolean  "is_confirmed",   :default => false
     t.boolean  "is_deleted",     :default => false
     t.datetime "created_at",                        :null => false
@@ -222,6 +225,7 @@ ActiveRecord::Schema.define(:version => 20130314032106) do
   end
 
   create_table "sales_return_entries", :force => true do |t|
+    t.integer  "creator_id"
     t.integer  "sales_return_id"
     t.integer  "delivery_entry_id"
     t.string   "code"

@@ -3,7 +3,7 @@ class SalesReturnEntry < ActiveRecord::Base
   # attr_accessible :title, :body
 
   belongs_to :delivery_entry 
-    
+  belongs_to :sales_return
   
   validates_presence_of :delivery_entry_id
   validates_presence_of :creator_id
@@ -15,8 +15,14 @@ class SalesReturnEntry < ActiveRecord::Base
   validate :entry_must_come_from_single_delivery 
   validate :entry_uniqueness 
   
-  after_save  :update_item_statistics, :update_item_pending_receival, :update_delivery_stock_mutations
-  after_destroy  :update_item_statistics, :update_item_pending_delivery
+  after_save  :update_item_statistics, :update_item_pending_delivery, :update_delivery_stock_mutations, :adjust_quantity_confirmed
+  after_destroy  :update_item_statistics, :update_item_pending_delivery, :adjust_quantity_confirmed
+   
+  
+  def adjust_quantity_confirmed
+    delivery_entry = self.delivery_entry
+    delivery_entry.update_quantity_confirmed
+  end 
    
   def update_delivery_stock_mutations
     return nil if not self.is_confirmed? 
