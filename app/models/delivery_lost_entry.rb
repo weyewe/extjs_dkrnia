@@ -15,8 +15,19 @@ class DeliveryLostEntry < ActiveRecord::Base
   validate :entry_must_come_from_single_delivery 
   validate :entry_uniqueness 
   
-  after_save  :update_item_statistics, :update_item_pending_receival, :update_delivery_stock_mutations
-  after_destroy  :update_item_statistics, :update_item_pending_receival
+  after_save  :update_item_statistics, :update_item_pending_delivery, :update_delivery_stock_mutations
+  after_destroy  :update_item_statistics, :update_item_pending_delivery
+  
+  def update_item_pending_delivery
+    return nil if not self.is_confirmed? 
+    return nil if self.delivery_entry.sales_order_entry.item.nil? 
+    
+    item = self.delivery_entry.sales_order_entry.item
+    item.reload 
+    item.update_pending_delivery
+  end
+  
+  
    
   def update_delivery_stock_mutations
     return nil if not self.is_confirmed? 
@@ -43,9 +54,9 @@ class DeliveryLostEntry < ActiveRecord::Base
  
      
   def quantity_must_not_less_than_zero
-    if quantity.present? and quantity_sent <= 0 
+    if quantity.present? and quantity <= 0 
       msg = "Kuantitas  tidak boleh 0 atau negative "
-      errors.add(:quantity_sent, msg )
+      errors.add(:quantity, msg )
     end
   end
   
@@ -217,7 +228,7 @@ class DeliveryLostEntry < ActiveRecord::Base
       header = "[pending]"
     end
     
-    string = "#{header}SRE" + 
+    string = "#{header}DLE" + 
               ( self.created_at.year%1000).to_s + "-" + 
               ( self.created_at.month).to_s + '-' + 
               ( counter.to_s ) 
@@ -256,12 +267,12 @@ class DeliveryLostEntry < ActiveRecord::Base
     ).each {|x| x.destroy }
   end
    
-  def delivery_return_stock_mutation
+  def delivery_lost_stock_mutation
     StockMutation.where(
       :source_document_entry_id => self.id,
       :source_document_entry => self.class.to_s ,
-      :mutation_case => MUTATION_CASE[:delivery_returned],
-      :mutation_status => MUTATION_STATUS[:addition]
+      :mutation_case => MUTATION_CASE[:delivery_lost],
+      :mutation_status => MUTATION_STATUS[:deduction]
     ).first 
   end
   

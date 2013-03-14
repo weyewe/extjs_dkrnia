@@ -14,25 +14,14 @@ class SalesReturn < ActiveRecord::Base
   
   def delete(employee) 
     return nil if employee.nil? 
-    if self.is_confirmed? 
-      ActiveRecord::Base.transaction do
-        self.post_confirm_delete( employee) 
-      end
-      return self
+    
+    self.sales_return_entries.each do |sre|
+      sre.delete( employee ) 
     end
    
     self.destroy 
   end
   
-  def post_confirm_delete( employee) 
-      
-    self.sales_return_entries.each do |sre|
-      sre.delete( employee ) 
-    end 
-    
-    self.is_deleted = true 
-    self.save 
-  end
   
    
   

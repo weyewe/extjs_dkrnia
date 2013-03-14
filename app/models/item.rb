@@ -135,4 +135,10 @@ class Item < ActiveRecord::Base
               self.purchase_receival_entries.where(:is_confirmed => true ).sum("quantity")
     self.save 
   end
+  
+  def update_pending_delivery
+    self.pending_receival = self.sales_order_entries.where(:is_confirmed => true ).sum("quantity") - 
+              self.delivery_entries.where(:is_confirmed => true ).sum("quantity")
+    self.save
+  end
 end

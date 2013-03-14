@@ -31,6 +31,10 @@ class Delivery < ActiveRecord::Base
   def post_confirm_delete( employee) 
      
     # if there is sales_return or sales_lost , you must destroy those 2. 
+    if self.sales_return or self.delivery_lost
+      self.errors.add(:generic_errors , "Sudah ada sales return atau hilang di jalan" )  
+      return self 
+    end
     
     self.delivery_entries.each do |de|
       de.delete( employee ) 

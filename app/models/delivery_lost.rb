@@ -14,25 +14,30 @@ class DeliveryLost < ActiveRecord::Base
   
   def delete(employee) 
     return nil if employee.nil? 
-    if self.is_confirmed? 
-      ActiveRecord::Base.transaction do
-        self.post_confirm_delete( employee) 
-      end
-      return self
-    end
-   
-    self.destroy 
-  end
-  
-  def post_confirm_delete( employee) 
-      
+    # if self.is_confirmed? 
+    #   ActiveRecord::Base.transaction do
+    #     self.post_confirm_delete( employee) 
+    #   end
+    #   return self
+    # end
+    #    
+    # self.destroy 
     self.delivery_lost_entries.each do |dle|
       dle.delete( employee ) 
-    end 
-    
-    self.is_deleted = true 
-    self.save 
+    end
+   
+    self.destroy
   end
+  
+  # def post_confirm_delete( employee) 
+  #     
+  #   self.delivery_lost_entries.each do |dle|
+  #     dle.delete( employee ) 
+  #   end 
+  #   
+  #   self.is_deleted = true 
+  #   self.save 
+  # end
   
    
   

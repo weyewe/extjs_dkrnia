@@ -15,19 +15,18 @@ class DeliveryEntry < ActiveRecord::Base
    
    
   validate :quantity_must_not_less_than_zero 
-  # validate :quantity_must_not_exceed_available_quantity
   validate :entry_uniqueness 
   
-  after_save  :update_item_statistics
-  after_destroy  :update_item_statistics
+  after_save  :update_item_statistics, :update_item_pending_delivery
+  after_destroy  :update_item_statistics, :update_item_pending_delivery
   
-  def update_item_pending_receival
+  def update_item_pending_delivery
     return nil if not self.is_confirmed? 
     return nil if self.sales_order_entry.nil? 
     
     item = self.sales_order_entry.item  
     item.reload 
-    item.update_pending_receival
+    item.update_pending_delivery
   end
   
   def update_item_statistics
@@ -42,7 +41,6 @@ class DeliveryEntry < ActiveRecord::Base
   def update_purchase_order_entry_fulfilment_status
     purchase_order_entry = self.purchase_order_entry 
     purchase_order_entry.update_fulfillment_status
-    # what if they change the purchase_order_entry
   end
      
   def quantity_must_not_less_than_zero
@@ -58,7 +56,6 @@ class DeliveryEntry < ActiveRecord::Base
     return nil if sales_order_entry.nil? 
 
     parent = self.delivery 
-
 
     delivery_entry_count = DeliveryEntry.where(
       :sales_order_entry_id => self.sales_order_entry_id,

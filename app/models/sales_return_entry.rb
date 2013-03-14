@@ -16,20 +16,20 @@ class SalesReturnEntry < ActiveRecord::Base
   validate :entry_uniqueness 
   
   after_save  :update_item_statistics, :update_item_pending_receival, :update_delivery_stock_mutations
-  after_destroy  :update_item_statistics, :update_item_pending_receival
+  after_destroy  :update_item_statistics, :update_item_pending_delivery
    
   def update_delivery_stock_mutations
     return nil if not self.is_confirmed? 
     StockMutation.create_or_update_delivery_return_stock_mutation( self )  
   end
   
-  def update_item_pending_receival
+  def update_item_pending_delivery
     return nil if not self.is_confirmed? 
     return nil if self.delivery_entry.sales_order_entry.item.nil? 
     
     item = self.delivery_entry.sales_order_entry.item
     item.reload 
-    item.update_pending_receival
+    item.update_pending_delivery
   end
   
   def update_item_statistics
@@ -43,9 +43,9 @@ class SalesReturnEntry < ActiveRecord::Base
  
      
   def quantity_must_not_less_than_zero
-    if quantity.present? and quantity_sent <= 0 
+    if quantity.present? and quantity <= 0 
       msg = "Kuantitas  tidak boleh 0 atau negative "
-      errors.add(:quantity_sent, msg )
+      errors.add(:quantity, msg )
     end
   end
   
