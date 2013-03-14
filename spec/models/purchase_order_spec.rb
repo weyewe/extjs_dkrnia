@@ -225,7 +225,7 @@ describe PurchaseOrder do
           @test_item.reload
           final_pending_receival = @test_item.pending_receival
           diff = final_pending_receival - initial_pending_receival
-          diff.should == 5 
+          diff.should == @extra_diff
         end
         
         # SECOND BRANCH: delete post confirm 
