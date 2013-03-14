@@ -181,6 +181,7 @@ class PurchaseReceivalEntry < ActiveRecord::Base
       ).count
 
       self.save 
+      return self if self.errors.size != 0 
     end
     
     if is_quantity_changed

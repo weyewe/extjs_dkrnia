@@ -2,6 +2,7 @@ class Item < ActiveRecord::Base
   include UniqueNonDeleted
   # attr_accessible :name, :recommended_selling_price, :category_id
   has_many :stock_entry 
+  belongs_to :item_category
   
   belongs_to :item_category 
   has_one :stock_migration

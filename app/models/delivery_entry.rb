@@ -157,6 +157,7 @@ class DeliveryEntry < ActiveRecord::Base
       self.sales_order_entry_id = params[:sales_order_entry_id]
       self.quantity_sent = params[:quantity_sent] 
       self.save
+      return self if self.errors.size != 0 
     end
     
     if is_quantity_changed 

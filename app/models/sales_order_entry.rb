@@ -120,6 +120,7 @@ class SalesOrderEntry < ActiveRecord::Base
       self.quantity                = params[:quantity]
 
       self.save 
+      return self if self.errors.size != 0 
     end
     
     if is_quantity_changed

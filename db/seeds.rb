@@ -64,6 +64,8 @@ end
 
 item_name_array = [ "itemA", "itemB", "itemC", "itemD", "itemE", "itemF", "itemG", "itemH",
                     "itemI", "itemJ"]
+                    
+base_item_category = ItemCategory.create_base_object( admin, :name => "Base Item" ) 
 
 item_name_array.each do |item_name|
   Item.create_by_employee(admin,  {

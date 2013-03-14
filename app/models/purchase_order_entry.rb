@@ -167,7 +167,9 @@ class PurchaseOrderEntry < ActiveRecord::Base
       self.item_id = params[:item_id]
       self.quantity = params[:quantity]
       self.save
-      self.reload
+      return self if self.errors.size != 0 
+      
+     
       # puts "Gonna update the old item in post confirm update\n"*10
       old_item.update_pending_receival
     end

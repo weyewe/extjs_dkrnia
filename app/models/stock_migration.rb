@@ -35,8 +35,6 @@ class StockMigration < ActiveRecord::Base
     # total_sales_order = SalesOrder.where()
     start_datetime = Date.today.at_beginning_of_month.to_datetime
     end_datetime = Date.today.next_month.at_beginning_of_month.to_datetime
-    puts "The start_datetime: #{start_datetime}"
-    puts "The end_datetime: #{end_datetime}"
     
     counter = self.class.where{
       (self.created_at >= start_datetime)  & 
@@ -79,15 +77,10 @@ class StockMigration < ActiveRecord::Base
     new_object.item_id      = params[:item_id]
     
     new_object.quantity     = params[:quantity]
-    puts "The item_id: #{new_object.item_id}"
-    puts "The quantity: #{new_object.quantity}"
      
     ActiveRecord::Base.transaction do
       if new_object.save  
-        puts "before the genereate code"
         new_object.generate_code
-        # and auto confirm 
-        puts "before the employee"
         new_object.confirm(employee)
       end 
     end

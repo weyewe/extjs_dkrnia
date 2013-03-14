@@ -33,6 +33,8 @@ GEM
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
     arel (3.0.2)
+    awesome_nested_set (2.1.6)
+      activerecord (>= 3.0.0)
     bcrypt-ruby (3.0.1)
     builder (3.0.4)
     coffee-rails (3.2.2)
@@ -151,6 +153,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_decimal
+  awesome_nested_set
   coffee-rails (~> 3.2.1)
   devise
   factory_girl_rails (~> 4.0)

@@ -2,6 +2,8 @@ class CreateItems < ActiveRecord::Migration
   def change
     create_table :items do |t|
       t.integer :creator_id  
+    
+      t.integer :item_category_id 
       
       t.string :name  
       t.string :supplier_code
