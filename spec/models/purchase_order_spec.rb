@@ -212,6 +212,35 @@ describe PurchaseOrder do
           @po_entry1.should_not be_valid 
         end
         
+        it 'should allow item change update' do
+          @test_item.reload
+          @test_item3.reload
+          
+          initial_po1_quantity = @po_entry1.quantity 
+          initial_pending_receival1 = @test_item.pending_receival 
+          initial_pending_receival3 = @test_item3.pending_receival
+          @po_entry1.update_by_employee(@admin, {
+            :item_id => @test_item3.id,
+            :quantity => @po_quantity1  
+          })
+          @po_entry1.should be_valid 
+          
+          
+          @test_item.reload
+          @test_item3.reload 
+          
+          final_pending_receival1 = @test_item.pending_receival
+          final_pending_receival3 = @test_item3.pending_receival
+          
+          diff1 = initial_pending_receival1  - final_pending_receival1 
+          diff1.should == initial_po1_quantity
+          
+          diff3 = final_pending_receival3 - initial_pending_receival3
+          diff3.should == @po_quantity1
+        end
+        
+      
+        
         it 'should  allow quantity update => change pending receival' do
           @extra_diff = 5 
           initial_pending_receival = @test_item.pending_receival 
@@ -226,7 +255,10 @@ describe PurchaseOrder do
           final_pending_receival = @test_item.pending_receival
           diff = final_pending_receival - initial_pending_receival
           diff.should == @extra_diff
+          
         end
+        
+        
         
         # SECOND BRANCH: delete post confirm 
         
@@ -248,9 +280,75 @@ describe PurchaseOrder do
         
         
         context "coupled has takes place (in this case: purchase receival)" do
+          before(:each) do
+            @pr = PurchaseReceival.create_by_employee(@admin,{
+              :vendor_id => @vendor.id 
+            } )
+            
+            @pr_quantity1 = @po_quantity1 - 5 
+            @pr_entry1 = PurchaseReceivalEntry.create_by_employee(@admin, @pr, {
+              :purchase_order_entry_id => @po_entry1.id ,
+              :quantity => @pr_quantity1 
+            })
+
+            @pr_quantity2 = @po_quantity2 - 5
+            @pr_entry2 = PurchaseReceivalEntry.create_by_employee(@admin, @pr, {
+              :purchase_order_entry_id => @po_entry2.id ,
+              :quantity => @pr_quantity2 
+            })
+            @pr.reload
+            @pr.confirm(@admin)
+            @test_item.reload
+            @test_item2.reload 
+            @pr_entry1.reload
+            @pr_entry2.reload 
+          end
           
-          # FIRST Branch : on update  # can't update the item anymore if there is purchase receival
-          # Second Branch : on delete  # can't delete the purchase order entry if there is purchase receival
+          it 'should provide sane purchase_receival' do
+            @pr.is_confirmed.should be_true 
+            @pr.active_purchase_receival_entries.count.should == 2 
+          end
+          
+          # FIRST Branch : on update  # can't change the item anymore if there is purchase receival
+          it 'should not allow item update' do
+            @po_entry1.update_by_employee(@admin, {
+              :item_id => @test_item3.id ,
+              :quantity => @po_quantity1
+            })
+            
+            # @po_entry1.should_not be_valid 
+            @po_entry1.errors.size.should_not == 0 
+          end
+          
+          it 'should allow quantity update' do
+            @po_entry1.update_by_employee(@admin, {
+              :item_id => @test_item3.id ,
+              :quantity => @po_quantity1 - 1 
+            })
+            
+            @po_entry1.should be_valid 
+          end
+          
+          it 'should not allow quantity update to be lower than the used quantity' do
+            @po_entry1.update_by_employee(@admin, {
+              :item_id => @test_item3.id ,
+              :quantity => @pr_quantity2 - 1 
+            })
+            
+            @po_entry1.errors.size.should_not == 0 
+          end
+          
+          
+          
+         
+         # Second Branch : on delete  # can't delete the purchase order entry if there is purchase receival
+          it 'should not allow delete' do
+            @po_entry1.delete(@admin)
+            @po_entry1.reload
+            @po_entry1.persisted?.should be_true 
+          end
+          
+          
         end 
         
       end

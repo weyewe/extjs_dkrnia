@@ -294,7 +294,25 @@ describe PurchaseReceival do
         end
         
         # SECOND BRANCH: delete post confirm
-        # IT HAS NO FURTHER COUPLING => The goods are in our warehouse, safe and sound.. well, actually, it has coupling . but fuck it 
+        # IT HAS NO FURTHER COUPLING => The goods are in our warehouse, safe and sound.. well, actually, it has coupling . but fuck it
+        it 'should allow delete on purchase_receival entry' do
+          @test_item1.reload
+          @initial_ready =  @test_item1.ready 
+          @initial_pending_receival = @test_item1.pending_receival 
+          quantity = @pr_entry1.quantity 
+          @pr_entry1.delete(@admin)
+          @pr_entry1.persisted?.should be_false 
+          @test_item1.reload
+          
+          @final_ready = @test_item1.ready
+          @final_pending_receival = @test_item1.pending_receival 
+          
+          diff_ready = @initial_ready - @final_ready
+          diff_pending_receival = @final_pending_receival - @initial_pending_receival 
+          
+          diff_ready.should == quantity 
+          diff_pending_receival.should == quantity
+        end 
       end
       
     
