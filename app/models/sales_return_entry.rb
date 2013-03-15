@@ -20,6 +20,7 @@ class SalesReturnEntry < ActiveRecord::Base
    
   
   def adjust_quantity_confirmed
+    return nil if not self.is_confirmed? 
     delivery_entry = self.delivery_entry
     delivery_entry.update_quantity_confirmed
   end 
@@ -79,6 +80,7 @@ class SalesReturnEntry < ActiveRecord::Base
       :delivery_entry_id => self.delivery_entry_id,
       :sales_return_id => parent.id  
     ).count 
+    
 
     item = delivery_entry.sales_order_entry.item 
     delivery  = delivery_entry.delivery 
@@ -182,11 +184,12 @@ class SalesReturnEntry < ActiveRecord::Base
       self.delivery_entry_id = params[:delivery_entry_id]
       self.quantity = params[:quantity] 
       self.save
+      return self if self.errors.size != 0 
     end
     
     if is_quantity_changed 
       puts "8824 the quantity is changed "
-      self.quantity_sent     = params[:quantity_sent]
+      self.quantity     = params[:quantity]
       self.save
     end 
     
@@ -196,6 +199,7 @@ class SalesReturnEntry < ActiveRecord::Base
       old_item.reload
       self.reload
       old_item.update_ready_quantity
+      old_item.update_pending_delivery 
       self.delivery_entry.sales_order_entry.item.update_ready_quantity
     end
     # update stock mutation

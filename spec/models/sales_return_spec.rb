@@ -131,12 +131,18 @@ describe SalesReturn do
       :quantity_sent => @del_quantity1 
     })
     
-    @del_quantity2 = @so_quantity2 - @diff2 
+    @del_quantity2 = @so_quantity2 - @diff2  #5-1 = 4 
     
-    @del_quantity3 = @so_quantity3 - @diff3
+    
     @del_entry2 = DeliveryEntry.create_by_employee(@admin, @del, {
       :sales_order_entry_id => @so_entry2.id ,
       :quantity_sent => @del_quantity2 
+    })
+    
+    @del_quantity3 = @so_quantity3 - @diff3 # 7-4 = 3 
+    @del_entry3 = DeliveryEntry.create_by_employee(@admin, @del, {
+      :sales_order_entry_id => @so_entry3.id ,
+      :quantity_sent => @del_quantity3
     })
     @del.reload
     
@@ -213,6 +219,20 @@ describe SalesReturn do
         @sre.should_not be_valid
       end
       
+      it 'should NOT allow  negative or 0 quantity' do
+        @sre = SalesReturnEntry.create_by_employee(@admin,@sr, {
+          :delivery_entry_id => @del_entry1.id,
+          :quantity => -1
+        })
+        @sre.should_not be_valid
+        
+        @sre = SalesReturnEntry.create_by_employee(@admin,@sr, {
+          :delivery_entry_id => @del_entry1.id,
+          :quantity => 0
+        })
+        @sre.should_not be_valid
+      end
+      
       it 'should not exceed max quantity (quantity_sent - delivery_lost)' do
         
         @sre = SalesReturnEntry.create_by_employee(@admin,@sr, {
@@ -240,30 +260,100 @@ describe SalesReturn do
             :delivery_entry_id => @del_entry1.id,
             :quantity => @del_quantity1  
             })
+        
+          @sre2 = SalesReturnEntry.create_by_employee(@admin,@sr, {
+            :delivery_entry_id => @del_entry2.id,
+            :quantity => @del_quantity1  
+            })
             
           @initial_so_pending_delivery = @so_entry1.pending_delivery 
-          @inital_pending_delivery = @test_item1.pending_delivery 
+          @initial_pending_delivery = @test_item1.pending_delivery 
           @sr.confirm(@admin)
           @sre1.reload 
           @so_entry1.reload 
           @test_item1.reload
+          @del_entry1.reload 
         end
         
-        it 'should increase the pending delivery ' do
-          puts "The initial pending_delivery: #{@inital_pending_delivery}"
-          @final_pending_delivery =  @test_item1.pending_delivery
-          puts "The final pending delivery: #{@final_pending_delivery}"
-          diff = @final_pending_delivery - @initial_pending_delivery
-          puts "The diff: #{diff}"
-          puts "del_quantity1: #{@del_quantity1}"
-          # diff.should == @del_quantity1
-        end
+        # it 'should have 2 sales return entries' do
+        #   @sr.sales_return_entries.count.should == 2
+        # end
+        # 
+        # it 'should increase the pending delivery ' do
+        #   @final_pending_delivery =  @test_item1.pending_delivery
+        #   diff = @final_pending_delivery - @initial_pending_delivery
+        #   diff.should == @del_quantity1
+        # end
         # 
         # it 'should increase the sales order entry pending delivery' do
         #   @final_so_pending_delivery = @so_entry1.pending_delivery
+        # 
         #   diff = @final_so_pending_delivery - @initial_so_pending_delivery
         #   diff.should == @del_quantity1
         # end
+        # 
+        # it 'should create 1 stock mutation' do
+        #   @sre1.stock_mutation.should be_valid 
+        #   @sre1.stock_mutation.quantity.should == @sre1.quantity
+        # end
+        
+        
+        # BRANCH 1 : post confirm update
+        it 'should preserve uniqueness' do
+        
+          @sre1.update_by_employee(@admin,{
+            :delivery_entry_id => @del_entry2.id ,
+            :quantity => 1
+          })
+          
+          @sre1.should_not be_valid 
+        end
+        
+        
+        it 'should change the stock mutation on update quantity' do
+          @sre1.update_by_employee(@admin,  {
+            :delivery_entry_id => @del_entry1.id,
+            :quantity => 1 
+            })
+            
+          @sre1.should be_valid
+          @sre1.stock_mutation.quantity.should ==  1
+          @del_entry1.reload 
+          @del_entry1.quantity_confirmed.should == @del_entry1.quantity_sent - 1 
+          
+          @sre1.update_by_employee(@admin,  {
+            :delivery_entry_id => @del_entry1.id,
+            :quantity => @del_quantity1
+            })
+          @sre1.should be_valid 
+          
+          @sre1.update_by_employee(@admin,  {
+            :delivery_entry_id => @del_entry1.id,
+            :quantity => @del_quantity1 + 2 
+            })
+          @sre1.should_not be_valid
+        end
+        
+
+        
+        # BRANCH 2 : post confirm delete 
+        context "delete post confirm" do
+          before(:each) do
+            @stock_mutation = @sre1.stock_mutation 
+            @sre1.delete(@admin)
+            @del_entry1.reload 
+          end
+          
+          it 'should update the quantity confirmed in delivery entry' do
+            @del_entry1.quantity_confirmed = @del_entry1.quantity_sent 
+          end
+
+          it 'should destroy the associated stock mutation' do
+            StockMutation.find_by_id( @stock_mutation.id).should be_nil 
+          end
+        end
+        
+         
       end
     end
   end

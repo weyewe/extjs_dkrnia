@@ -183,7 +183,6 @@ class DeliveryEntry < ActiveRecord::Base
     
     
     if is_item_changed
-      puts "773 THE ITEM IS CHANGED"      
       self.sales_order_entry_id = params[:sales_order_entry_id]
       self.quantity_sent = params[:quantity_sent] 
       self.quantity_confirmed = self.quantity_sent - self.quantity_returned - self.quantity_lost  
@@ -194,7 +193,6 @@ class DeliveryEntry < ActiveRecord::Base
     end
     
     if is_quantity_changed 
-      puts "8824 the quantity is changed "
       self.quantity_sent     = params[:quantity_sent]
       self.quantity_confirmed = self.quantity_sent - self.quantity_returned - self.quantity_lost 
       self.save
