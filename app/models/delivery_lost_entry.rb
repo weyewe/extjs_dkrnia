@@ -124,10 +124,6 @@ class DeliveryLostEntry < ActiveRecord::Base
   end
   
   def post_confirm_delete( employee)  
-    # if there is stock_usage_entry.. refresh => dispatch to other available shite 
-    # stock_entry.update_stock_migration_stock_entry( self ) if not stock_entry.nil? 
-    
-    # stock_entry.destroy 
     self.destroy_stock_mutations
     self.destroy 
   end
@@ -187,11 +183,12 @@ class DeliveryLostEntry < ActiveRecord::Base
       self.delivery_entry_id = params[:delivery_entry_id]
       self.quantity = params[:quantity] 
       self.save
+      return self if self.errors.size != 0 
     end
     
     if is_quantity_changed 
       puts "8824 the quantity is changed "
-      self.quantity_sent     = params[:quantity_sent]
+      self.quantity_sent     = params[:quantity]
       self.save
     end 
     
@@ -201,6 +198,7 @@ class DeliveryLostEntry < ActiveRecord::Base
       old_item.reload
       self.reload
       old_item.update_ready_quantity
+      old_item.update_pending_delivery 
       self.delivery_entry.sales_order_entry.item.update_ready_quantity
     end
     # update stock mutation

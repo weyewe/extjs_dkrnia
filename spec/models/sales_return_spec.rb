@@ -275,27 +275,27 @@ describe SalesReturn do
           @del_entry1.reload 
         end
         
-        # it 'should have 2 sales return entries' do
-        #   @sr.sales_return_entries.count.should == 2
-        # end
-        # 
-        # it 'should increase the pending delivery ' do
-        #   @final_pending_delivery =  @test_item1.pending_delivery
-        #   diff = @final_pending_delivery - @initial_pending_delivery
-        #   diff.should == @del_quantity1
-        # end
-        # 
-        # it 'should increase the sales order entry pending delivery' do
-        #   @final_so_pending_delivery = @so_entry1.pending_delivery
-        # 
-        #   diff = @final_so_pending_delivery - @initial_so_pending_delivery
-        #   diff.should == @del_quantity1
-        # end
-        # 
-        # it 'should create 1 stock mutation' do
-        #   @sre1.stock_mutation.should be_valid 
-        #   @sre1.stock_mutation.quantity.should == @sre1.quantity
-        # end
+        it 'should have 2 sales return entries' do
+          @sr.sales_return_entries.count.should == 2
+        end
+        
+        it 'should increase the pending delivery ' do
+          @final_pending_delivery =  @test_item1.pending_delivery
+          diff = @final_pending_delivery - @initial_pending_delivery
+          diff.should == @del_quantity1
+        end
+        
+        it 'should increase the sales order entry pending delivery' do
+          @final_so_pending_delivery = @so_entry1.pending_delivery
+        
+          diff = @final_so_pending_delivery - @initial_so_pending_delivery
+          diff.should == @del_quantity1
+        end
+        
+        it 'should create 1 stock mutation' do
+          @sre1.stock_mutation.should be_valid 
+          @sre1.stock_mutation.quantity.should == @sre1.quantity
+        end
         
         
         # BRANCH 1 : post confirm update
