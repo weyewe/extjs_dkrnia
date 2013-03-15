@@ -8,6 +8,16 @@ class DeliveryLost < ActiveRecord::Base
   has_many :delivery_lost_entries  
   belongs_to :delivery   
   
+  validate :delivery_must_be_confirmed
+  
+  def delivery_must_be_confirmed
+    return nil if self.delivery_id.nil?
+    
+    if not delivery.is_confirmed?
+      errors.add(:delivery_id, "Delivery harus dikonfirmasi dahulu")
+    end
+  end
+  
   def self.active_objects
     self.where(:is_deleted => false ).order("id DESC")
   end
@@ -27,7 +37,7 @@ class DeliveryLost < ActiveRecord::Base
   
   
   def active_delivery_lost_entries 
-    self.delivery_lost_entries.where(:is_deleted => false ).order("id DESC")
+    self.delivery_lost_entries.order("id DESC")
   end
   
   def update_by_employee( employee, params ) 

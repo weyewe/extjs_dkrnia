@@ -251,7 +251,7 @@ describe DeliveryLost do
         @dle.should be_valid 
       end
       
-      context 'on confirming sales return entry' do
+      context 'on confirming delivery lost entry' do
         before(:each) do
           @test_item1.reload
           @so_entry1 = @del_entry1.sales_order_entry 
@@ -334,7 +334,7 @@ describe DeliveryLost do
           @dle1.should_not be_valid
         end
         
-
+        
         
         # BRANCH 2 : post confirm delete 
         context "delete post confirm" do
@@ -347,7 +347,7 @@ describe DeliveryLost do
           it 'should update the quantity confirmed in delivery entry' do
             @del_entry1.quantity_confirmed = @del_entry1.quantity_sent 
           end
-
+        
           it 'should destroy the associated stock mutation' do
             StockMutation.find_by_id( @stock_mutation.id).should be_nil 
           end

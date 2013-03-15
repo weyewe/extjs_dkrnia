@@ -3,6 +3,7 @@ class DeliveryLostEntry < ActiveRecord::Base
   # attr_accessible :title, :body
  
   belongs_to :delivery_entry
+  belongs_to :delivery_lost
     
   
   validates_presence_of :delivery_entry_id
@@ -15,8 +16,8 @@ class DeliveryLostEntry < ActiveRecord::Base
   validate :entry_must_come_from_single_delivery 
   validate :entry_uniqueness 
   
-  after_save  :update_item_statistics, :update_item_pending_delivery, :update_delivery_stock_mutations
-  after_destroy  :update_item_statistics, :update_item_pending_delivery
+  after_save  :update_item_statistics, :update_item_pending_delivery, :update_delivery_stock_mutations, :adjust_quantity_confirmed
+  after_destroy  :update_item_statistics, :update_item_pending_delivery, :adjust_quantity_confirmed
   
   def update_item_pending_delivery
     return nil if not self.is_confirmed? 
@@ -25,6 +26,12 @@ class DeliveryLostEntry < ActiveRecord::Base
     item = self.delivery_entry.sales_order_entry.item
     item.reload 
     item.update_pending_delivery
+  end
+  
+  def adjust_quantity_confirmed
+    return nil if not self.is_confirmed? 
+    delivery_entry = self.delivery_entry
+    delivery_entry.update_quantity_confirmed
   end
   
   
@@ -188,7 +195,7 @@ class DeliveryLostEntry < ActiveRecord::Base
     
     if is_quantity_changed 
       puts "8824 the quantity is changed "
-      self.quantity_sent     = params[:quantity]
+      self.quantity     = params[:quantity]
       self.save
     end 
     

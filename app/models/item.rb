@@ -141,7 +141,7 @@ class Item < ActiveRecord::Base
   
   def update_pending_delivery
     self.pending_delivery = self.sales_order_entries.where(:is_confirmed => true ).sum("quantity") - 
-              self.delivery_entries.where(:is_confirmed => true ).sum("quantity_confirmed")
+              self.delivery_entries.where(:is_confirmed => true ).sum("quantity_confirmed") 
     self.save
   end
 end
