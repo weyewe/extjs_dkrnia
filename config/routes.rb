@@ -14,6 +14,9 @@ ExtjsDikarunia::Application.routes.draw do
     match 'search_purchase_order_entry' => 'purchase_order_entries#search', :as => :search_purchase_order_entries, :method => :get
     match 'search_sales_order_entry' => 'sales_order_entries#search', :as => :search_sales_order_entries, :method => :get
     
+    match 'search_delivery' => 'deliveries#search', :as => :search_deliveries, :method => :get
+    match 'search_delivery_entry' => 'delivery_entries#search', :as => :search_delivery_entries, :method => :get
+    
     
     resources :employees
     resources :vendors
@@ -39,6 +42,14 @@ ExtjsDikarunia::Application.routes.draw do
     match 'confirm_delivery' => 'deliveries#confirm', :as => :confirm_delivery, :method => :post
     resources :delivery_entries 
     match 'update_post_delivery' => 'delivery_entries#update_post_delivery', :as => :update_post_delivery, :method => :post
+    
+    resources :sales_returns
+    match 'confirm_sales_return' => 'sales_returns#confirm', :as => :confirm_sales_return, :method => :post
+    resources :sales_return_entries 
+    
+    resources :delivery_losts
+    match 'confirm_delivery_lost' => 'delivery_losts#confirm', :as => :confirm_delivery_lost, :method => :post
+    resources :delivery_lost_entries 
   end
 
 end
