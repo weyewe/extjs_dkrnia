@@ -8,14 +8,14 @@ Ext.define('AM.view.sales.SalesReturn', {
 		},
 		
 		items : [
-			// {
-			// 	type : 'panel',
-			// 	html : 'this is the sales return'
-			// }
 			{
-				xtype : 'salesreturnlist' ,
-				flex : 1  
-			}//,
+				type : 'panel',
+				html : 'this is the sales return'
+			}
+			// {
+			// 	xtype : 'salesreturnlist' ,
+			// 	flex : 1  
+			// }//,
 			// {
 			// 	xtype : 'salesreturnentrylist',
 			// 	flex : 1 
