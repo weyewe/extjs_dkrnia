@@ -1,19 +1,19 @@
-class Api::SalesReturnsController < Api::BaseApiController
+class Api::DeliveryLostsController < Api::BaseApiController
   
   def index
-    @objects = SalesReturn.joins(:delivery => [:customer]).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
-    @total = SalesReturn.active_objects.count
+    @objects = DeliveryLost.joins(:delivery => [:customer]).active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+    @total = DeliveryLost.active_objects.count
   end
 
   def create
-    @object = SalesReturn.create_by_employee(current_user,  params[:sales_return] )  
+    @object = DeliveryLost.create_by_employee(current_user,  params[:delivery_lost] )  
     
     
  
     if @object.errors.size == 0 
       render :json => { :success => true, 
-                        :sales_returns => [@object] , 
-                        :total => SalesReturn.active_objects.count }  
+                        :delivery_losts => [@object] , 
+                        :total => DeliveryLost.active_objects.count }  
     else
       msg = {
         :success => false, 
@@ -28,13 +28,13 @@ class Api::SalesReturnsController < Api::BaseApiController
 
   def update
     
-    @object = SalesReturn.find_by_id params[:id] 
-    @object.update_by_employee(current_user,  params[:sales_return])
+    @object = DeliveryLost.find_by_id params[:id] 
+    @object.update_by_employee(current_user,  params[:delivery_lost])
      
     if @object.errors.size == 0 
       render :json => { :success => true,   
-                        :sales_returns => [@object],
-                        :total => SalesReturn.active_objects.count  } 
+                        :delivery_losts => [@object],
+                        :total => DeliveryLost.active_objects.count  } 
     else
       msg = {
         :success => false, 
@@ -48,15 +48,15 @@ class Api::SalesReturnsController < Api::BaseApiController
   end
 
   def destroy
-    @object = SalesReturn.find(params[:id])
+    @object = DeliveryLost.find(params[:id])
     @object.delete(current_user)
 
-    if not @object.persisted?  
-      render :json => { :success => true, :total => SalesReturn.active_objects.count }  
+    if not @object.persisted? 
+      render :json => { :success => true, :total => DeliveryLost.active_objects.count }  
     else
       render :json => { 
                   :success => false, 
-                  :total => SalesReturn.active_objects.count,
+                  :total => DeliveryLost.active_objects.count,
                   :message => {
                     :errors => extjs_error_format( @object.errors )  
                   }
@@ -65,14 +65,14 @@ class Api::SalesReturnsController < Api::BaseApiController
   end
   
   def confirm
-    @object = SalesReturn.find_by_id params[:id]
+    @object = DeliveryLost.find_by_id params[:id]
     # add some defensive programming.. current user has role admin, and current_user is indeed belongs to the company 
     @object.confirm( current_user  )  
     
     if @object.is_confirmed? 
-      render :json => { :success => true, :total => SalesReturn.active_objects.count }  
+      render :json => { :success => true, :total => DeliveryLost.active_objects.count }  
     else
-      render :json => { :success => false, :total => SalesReturn.active_objects.count }  
+      render :json => { :success => false, :total => DeliveryLost.active_objects.count }  
     end
   end
   

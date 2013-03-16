@@ -133,7 +133,7 @@ Ext.define("AM.controller.Authorization", {
                     },
 										{ 
                         text:'Delivery Lost', 
-                        viewClass:'Bravo', 
+                        viewClass:'AM.view.sales.DeliveryLost', 
                         leaf:true, 
                         iconCls:'text' 
                     }

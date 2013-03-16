@@ -1,8 +1,8 @@
-Ext.define('AM.view.sales.deliverylost.List' ,{
+Ext.define('AM.view.sales.salesreturn.List' ,{
   	extend: 'Ext.grid.Panel',
-  	alias : 'widget.deliverylostlist',
+  	alias : 'widget.salesreturnlist',
 
-  	store: 'DeliveryLosts', 
+  	store: 'SalesReturns', 
  
 
 	initComponent: function() {
@@ -15,18 +15,18 @@ Ext.define('AM.view.sales.deliverylost.List' ,{
 		];
 
 		this.addObjectButton = new Ext.Button({
-			text: 'Add Delivery Lost',
+			text: 'Add Sales Return',
 			action: 'addObject'
 		});
 
 		this.editObjectButton = new Ext.Button({
-			text: 'Edit Delivery Lost',
+			text: 'Edit Sales Return',
 			action: 'editObject',
 			disabled: true
 		});
 
 		this.deleteObjectButton = new Ext.Button({
-			text: 'Delete Delivery Lost',
+			text: 'Delete Sales Return',
 			action: 'deleteObject',
 			disabled: true
 		});

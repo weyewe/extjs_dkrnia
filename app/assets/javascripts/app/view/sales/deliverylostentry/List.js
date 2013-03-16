@@ -1,45 +1,41 @@
-Ext.define('AM.view.sales.deliverylost.List' ,{
+Ext.define('AM.view.sales.deliverylostentry.List' ,{
   	extend: 'Ext.grid.Panel',
-  	alias : 'widget.deliverylostlist',
+  	alias : 'widget.deliverylostentrylist',
 
-  	store: 'DeliveryLosts', 
+  	store: 'DeliveryLostEntries', 
  
 
 	initComponent: function() {
 		this.columns = [
-			{ header: 'ID', dataIndex: 'id'},
 			{ header: 'Code',  dataIndex: 'code',  flex: 1 , sortable: false},
-			{ header: 'Customer',  dataIndex: 'customer_name',  flex: 1 , sortable: false},
-			{ header: 'Delivery Code',  dataIndex: 'delivery_code',  flex: 1 , sortable: false},
-			{ header: 'Confirmed?',  dataIndex: 'is_confirmed',  flex: 1 , sortable: false},
+			{ header: 'Item',  dataIndex: 'item_name',  flex: 1 , sortable: false},
+			{ header: 'Quantity',  dataIndex: 'quantity',  flex: 1 , sortable: false} 
 		];
 
 		this.addObjectButton = new Ext.Button({
-			text: 'Add Delivery Lost',
-			action: 'addObject'
+			text: 'Add',
+			action: 'addObject',
+			disabled : true 
 		});
 
 		this.editObjectButton = new Ext.Button({
-			text: 'Edit Delivery Lost',
+			text: 'Edit',
 			action: 'editObject',
 			disabled: true
 		});
-
+		
 		this.deleteObjectButton = new Ext.Button({
-			text: 'Delete Delivery Lost',
+			text: 'Delete',
 			action: 'deleteObject',
 			disabled: true
 		});
-		
-		this.confirmObjectButton = new Ext.Button({
-			text: 'Confirm',
-			action: 'confirmObject',
-			disabled: true
-		});
+
+	 
+ 
 
 
 
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, this.confirmObjectButton ];
+		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,
@@ -57,14 +53,18 @@ Ext.define('AM.view.sales.deliverylost.List' ,{
 	},
 
 	enableRecordButtons: function() {
+		this.addObjectButton.enable();
 		this.editObjectButton.enable();
 		this.deleteObjectButton.enable();
-		this.confirmObjectButton.enable();
 	},
 
 	disableRecordButtons: function() {
+		this.addObjectButton.disable();
 		this.editObjectButton.disable();
 		this.deleteObjectButton.disable();
-		this.confirmObjectButton.disable();
+	},
+	
+	setObjectTitle : function(record){
+		this.setTitle("Delivery Lost: " + record.get("code"));
 	}
 });
