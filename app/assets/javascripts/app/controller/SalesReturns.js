@@ -206,7 +206,7 @@ Ext.define('AM.controller.SalesReturns', {
 		salesReturnEntryGrid.setObjectTitle( record ) ;
 		salesReturnEntryGrid.getStore().load({
 			params : {
-				sales_order_id : record.get('id')
+				sales_return_id : record.get('id')
 			},
 			callback : function(records, options, success){
 				

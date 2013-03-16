@@ -3,8 +3,13 @@ Ext.define('AM.model.SalesReturnEntry', {
   	fields: [
     	{ name: 'id', type: 'int' },
     	{ name: 'code', type: 'string' } ,
-			{ name: 'delivery_entry_code', type: 'string' },
+
+			{ name: 'sales_return_code', type: 'string' },
+			{ name: 'sales_return_id', type: 'int' },
+			
 			{ name: 'delivery_entry_id', type: 'int' },
+			{ name: 'delivery_entry_code', type: 'string' },
+			
 			{ name: 'item_name', type: 'string'},
 			{ name: 'quantity',type: 'int'}
   	],

@@ -83,4 +83,38 @@ class Api::DeliveryEntriesController < Api::BaseApiController
       render :json => { :success => false, :total =>@parent.active_delivery_entries.count }  
     end
   end
+  
+  def search
+    search_params = params[:query]
+    selected_id = params[:selected_id]
+    if params[:selected_id].nil?  or params[:selected_id].length == 0 
+      selected_id = nil
+    end
+    
+    parent_id = params[:delivery_id]
+    
+    query = "%#{search_params}%"
+    # on PostGre SQL, it is ignoring lower case or upper case 
+    
+    if  selected_id.nil?
+      @objects = DeliveryEntry.joins( :delivery, :sales_order_entry => [:item] ).where{ (sales_order_entry.item.name =~ query )   & 
+                                (is_deleted.eq false )  & 
+                                (delivery_id.eq parent_id)
+                              }.
+                        page(params[:page]).
+                        per(params[:limit]).
+                        order("id DESC")
+    else
+      @objects = DeliveryEntry.joins(:delivery, :sales_order_entry => [:item] ).where{ (id.eq selected_id)  & 
+                                (is_deleted.eq false ) & 
+                                (delivery_id.eq delivery_id)
+                              }.
+                        page(params[:page]).
+                        per(params[:limit]).
+                        order("id DESC")
+    end
+    
+    @total = @objects.count
+    @success = true 
+  end
 end

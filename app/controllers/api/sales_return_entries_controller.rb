@@ -2,7 +2,7 @@ class Api::SalesReturnEntriesController < Api::BaseApiController
   
   def index
     @parent = SalesReturn.find_by_id params[:sales_return_id]
-    @objects = @parent.active_sales_return_entries.joins( :sales_return, :sales_order_entry =>[:item, :sales_order]).page(params[:page]).per(params[:limit]).order("id DESC")
+    @objects = @parent.active_sales_return_entries.joins( :sales_return, :delivery_entry => [:sales_order_entry => [:item]]).page(params[:page]).per(params[:limit]).order("id DESC")
     @total = @parent.active_sales_return_entries.count
   end
 

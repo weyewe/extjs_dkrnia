@@ -28,6 +28,10 @@ Ext.define('AM.view.sales.salesreturnentry.Form', {
 					mapping  :'id'
 				},
 				{
+					name : 'delivery_entry_code',
+					mapping  :'code'
+				},
+				{
 					name : 'item_name',
 					mapping : 'item_name'
 				}
@@ -35,6 +39,9 @@ Ext.define('AM.view.sales.salesreturnentry.Form', {
 			proxy  	: {
 				type : 'ajax',
 				url : 'api/search_delivery_entry',
+				extraParams: {
+					delivery_id : this.parentRecord.get('delivery_id')
+		    },
 				reader : {
 					type : 'json',
 					root : 'records', 
