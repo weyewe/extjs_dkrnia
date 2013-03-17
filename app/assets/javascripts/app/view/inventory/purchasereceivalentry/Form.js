@@ -18,8 +18,8 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 	
   initComponent: function() {
 	// get the parent id 
-		console.log("Inside the initComponent of the Form");
-		console.log( this.parentRecord  );
+		// console.log("Inside the initComponent of the Form");
+		// console.log( this.parentRecord  );
 		if( !this.parentRecord){ return; }
 	
 		var remoteJsonStore = Ext.create(Ext.data.JsonStore, {
@@ -104,8 +104,8 @@ Ext.define('AM.view.inventory.purchasereceivalentry.Form', {
 	},
 	
 	setComboBoxData : function( record){
-		console.log("In the PurchaseReceivalEntry Form");
-		console.log( record ) ;
+		// console.log("In the PurchaseReceivalEntry Form");
+		// console.log( record ) ;
 		var me = this; 
 		me.setLoading(true);
 		var comboBox = this.down('form').getForm().findField('purchase_order_entry_id'); 

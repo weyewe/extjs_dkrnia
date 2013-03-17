@@ -41,7 +41,7 @@ Ext.define('AM.controller.Users', {
  
 
 	loadObjectList : function(me){
-		console.log("************* IN THE USERS CONTROLLER: afterRENDER");
+		// console.log("************* IN THE USERS CONTROLLER: afterRENDER");
 		me.getStore().load();
 	},
 

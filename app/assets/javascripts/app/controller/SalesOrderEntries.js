@@ -107,8 +107,8 @@ Ext.define('AM.controller.SalesOrderEntries', {
 
     view.down('form').loadRecord(record);
 		view.setParentData( parentRecord );
-		console.log("selected record id: " + record.get('id'));
-		console.log("The selected poe id: " + record.get('purchase_order_entry_id'));
+		// console.log("selected record id: " + record.get('id'));
+		// console.log("The selected poe id: " + record.get('purchase_order_entry_id'));
 		view.setComboBoxData(record); 
   },
 

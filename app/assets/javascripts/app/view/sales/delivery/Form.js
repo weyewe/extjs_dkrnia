@@ -131,7 +131,7 @@ Ext.define('AM.view.sales.delivery.Form', {
   },
 
 	setComboBoxData : function( record){
-		console.log("Gonna set combo box data for delivery form");
+		// console.log("Gonna set combo box data for delivery form");
 		var me = this; 
 		// me.setLoading(true);
 		var comboBox = this.down('form').getForm().findField('employee_id'); 

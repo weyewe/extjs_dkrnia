@@ -34,32 +34,32 @@ Ext.define("AM.controller.Navigation", {
         return;
     }
 
-		console.log("The viewClass: " + record.get('viewClass'));
-		console.log("The text: " + record.get("text"));
+		// console.log("The viewClass: " + record.get('viewClass'));
+		// console.log("The text: " + record.get("text"));
 		this.setActiveExample( record.get('viewClass'), record.get('text'));
 	},
 	setActiveExample: function(className, title) {
-			console.log("Gonna set active example");
+			// console.log("Gonna set active example");
 			
       var worksheetPanel = this.getWorksheetPanel();
       
-      console.log("Gonna set title");
+      // console.log("Gonna set title");
       worksheetPanel.setTitle(title);
       
-      console.log("gonna create the worksheet with className: "  +className );
+      // console.log("gonna create the worksheet with className: "  +className );
       worksheet = Ext.create(className);
         
-			if(worksheet){
-				console.log( "worksheet presents");
-			}else{
-				console.log(" !!!!!!!!!!!!!!!! worksheet is not created");
-			}
+			// if(worksheet){
+			// 	console.log( "worksheet presents");
+			// }else{
+			// 	console.log(" !!!!!!!!!!!!!!!! worksheet is not created");
+			// }
 
-			console.log("Gonna remove all shite");
+			// console.log("Gonna remove all shite");
       worksheetPanel.removeAll();
-			console.log("gonna add the newly created worksheet");
+			// console.log("gonna add the newly created worksheet");
       worksheetPanel.add(worksheet);
-			console.log("done adding worksheet");
+			// console.log("done adding worksheet");
  
   }
 });
