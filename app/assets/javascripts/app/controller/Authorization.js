@@ -10,8 +10,14 @@ Ext.define("AM.controller.Authorization", {
 		{
 			ref: 'protectedContent',
 			selector: 'protected'
-		} 
+		},
+		{
+			ref : 'userMenu',
+			selector : 'appHeader #optionsMenu'
+		}
 	],
+	
+
 	 
 	init : function( application ) {
 		var me = this; 
@@ -28,7 +34,8 @@ Ext.define("AM.controller.Authorization", {
 	onActiveProtectedContent: function( panel, options) {
 		var me  = this; 
 		var currentUser = Ext.decode( localStorage.getItem('currentUser'));
-		console.log("onActive Protected Content");
+		var email = currentUser['email'];
+		// console.log("onActive Protected Content");
 		
 		// build the navigation tree 
 		var processList = panel.down('processList');
@@ -148,30 +155,10 @@ Ext.define("AM.controller.Authorization", {
 		treeStore.setRootNode(data);
 		processList.setLoading(false);
 		
-		
-		// re build the treeStore data 
-		
-		// console.log("FROM the Authorization controller. on active protected content");
-		// var coffeeBtn = panel.down('#coffeeBtn');
-		
-		// if( coffeeBtn ){
-		// 	console.log("Coffee button is fond");
-		// }
-		
-		// console.log("The type of currentUser in Authorization: " + typeof currentUser);
-		// 
-		// console.log("The type of currentUser['role']:" + typeof currentUser['role'] )
-		
-		// if( currentUser && currentUser['role'] && 
-		// 			currentUser['role']['coffee_maker'] && 
-		// 			currentUser['role']['coffee_maker']['make_coffee']){
-		// 	coffeeBtn.setVisible(true ) ;
-		// }
-		
-		
-		// check authorization.. check the role
-		// build the navigation 
-		// getNavigationsStore.removeAll();
-		
+		// Update the title of the menu button
+		// console.log("Gonna update the user menu");
+		var userMenu = me.getUserMenu();
+
+		userMenu.setText( email );
 	}
 });

@@ -17,11 +17,8 @@ Ext.define('AM.view.Header', {
         },
 				'->',
 				{
-					xtype : 'text',
-					text  : 'the user email',
-				},
-				{
 					text: "Options",
+					itemId : 'optionsMenu',
 					menu: [
 						{
 							action: 'editPassword',

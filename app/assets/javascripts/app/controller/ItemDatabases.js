@@ -62,6 +62,7 @@ Ext.define('AM.controller.ItemDatabases', {
 
   editObject: function() {
     var record = this.getList().getSelectedObject();
+		if(!record){return;}
     var view = Ext.widget('itemdatabaseform');
 
     view.down('form').loadRecord(record);

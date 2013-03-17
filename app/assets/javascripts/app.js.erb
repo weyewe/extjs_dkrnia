@@ -45,40 +45,6 @@ Ext.onReady(function(){
 	    }
 	  }, this);
 	
-		//  		Ext.form.field.ComboBox.override( {
-		//     setValue: function(v) {
-		//         // v = (v && v.toString) ? v.toString() : v;
-		// 		
-		//         if(!this.store.isLoaded && this.queryMode == 'remote' && v) {
-		// 						console.log("FIRST branch");
-		//             this.store.addListener('load', function() {
-		// 								
-		//                 this.store.isLoaded = true;
-		// 								console.log("The value of v is " + v);
-		// 								var text = v;
-		// 								var record = this.store.findRecord( this.valueField, v);
-		// 								if(record){
-		// 									text = record.get( this.displayField);  
-		// 									this.lastSelectionText = text; 
-		// 									this.value = record.get( this.valueField);
-		// 								}
-		// 								
-		//             }, this);
-		// 					
-		// 						this.store.load({
-		// 							params : {
-		// 								selected_id : v
-		// 							}
-		// 						});
-		//         } else {
-		// 						console.log("SECOND branch");
-		// 						if(v){
-		// 							this.callOverridden(arguments);
-		// 						}
-		//             
-		//         }
-		//     }
-		// });
 });
 
  
