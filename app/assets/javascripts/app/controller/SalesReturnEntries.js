@@ -25,7 +25,8 @@ Ext.define('AM.controller.SalesReturnEntries', {
     this.control({
       'salesreturnentrylist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange 
+        selectionchange: this.selectionChange ,
+				afterrender : this.loadObjectList
       },
       'salesreturnentryform button[action=save]': {
         click: this.updateObject
@@ -49,6 +50,10 @@ Ext.define('AM.controller.SalesReturnEntries', {
 		
     });
   },
+
+	loadObjectList : function(me){
+		me.getStore().loadData([],false);
+	},
 
 	reloadStore : function(record){
 		var list = this.getList();

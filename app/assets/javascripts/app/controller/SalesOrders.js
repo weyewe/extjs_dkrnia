@@ -30,7 +30,8 @@ Ext.define('AM.controller.SalesOrders', {
       'salesorderlist': {
         itemdblclick: this.editObject,
         selectionchange: this.selectionChange,
-				afterrender : this.loadObjectList,
+				afterrender : this.loadObjectList
+				
       },
       'salesorderform button[action=save]': {
         click: this.updateObject

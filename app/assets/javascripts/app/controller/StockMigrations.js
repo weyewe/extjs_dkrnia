@@ -25,8 +25,8 @@ Ext.define('AM.controller.StockMigrations', {
     this.control({
       'stockmigrationlist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange// ,
-        // 				afterrender : this.loadObjectList,
+        selectionchange: this.selectionChange,
+				afterrender : this.loadObjectList
       },
       'stockmigrationform button[action=save]': {
         click: this.updateObject
@@ -44,11 +44,10 @@ Ext.define('AM.controller.StockMigrations', {
     });
   },
  
-// the store will only be loaded if the item is clicked
-	// loadObjectList : function(me){
-	// 	me.getStore().load();
-	// },
-
+ 	loadObjectList : function(me){
+		me.getStore().loadData([],false);
+	},
+	
   addObject: function() {
 		
 		// I want to get the currently selected item 

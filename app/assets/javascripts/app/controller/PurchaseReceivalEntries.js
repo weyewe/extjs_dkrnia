@@ -25,7 +25,8 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
     this.control({
       'purchasereceivalentrylist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange 
+        selectionchange: this.selectionChange ,
+				afterrender : this.loadObjectList
       },
       'purchasereceivalentryform button[action=save]': {
         click: this.updateObject
@@ -49,6 +50,10 @@ Ext.define('AM.controller.PurchaseReceivalEntries', {
 		
     });
   },
+
+	loadObjectList : function(me){
+		me.getStore().loadData([],false);
+	},
 
 	reloadStore : function(record){
 		var list = this.getList();

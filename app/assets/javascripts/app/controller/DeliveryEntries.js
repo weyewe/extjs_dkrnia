@@ -25,7 +25,8 @@ Ext.define('AM.controller.DeliveryEntries', {
     this.control({
       'deliveryentrylist': {
         itemdblclick: this.editObject,
-        selectionchange: this.selectionChange 
+        selectionchange: this.selectionChange ,
+				afterrender : this.loadObjectList
       },
       'deliveryentryform button[action=save]': {
         click: this.updateObject
@@ -51,6 +52,9 @@ Ext.define('AM.controller.DeliveryEntries', {
     });
   },
  
+	loadObjectList : function(me){
+		me.getStore().loadData([],false);
+	},
 	
 
 	reloadStore : function(record){
