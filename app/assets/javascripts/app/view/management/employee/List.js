@@ -27,10 +27,22 @@ Ext.define('AM.view.management.employee.List' ,{
 			action: 'deleteObject',
 			disabled: true
 		});
+		
+		// this.filler = new Ext.toolbar.FillView({});  
+		
+		this.searchField = new Ext.form.field.Text({
+			name: 'searchField',
+			hideLabel: true,
+			width: 200,
+			emptyText : "Search",
+			checkChangeBuffer: 300
+		}); 
 
 
 
-		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton];
+
+		// this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton, '->', this.searchObjectButton ];
+		this.tbar = [this.addObjectButton, this.editObjectButton, this.deleteObjectButton,  this.searchField ];
 		this.bbar = Ext.create("Ext.PagingToolbar", {
 			store	: this.store, 
 			displayInfo: true,

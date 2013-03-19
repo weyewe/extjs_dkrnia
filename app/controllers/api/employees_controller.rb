@@ -1,8 +1,26 @@
 class Api::EmployeesController < Api::BaseApiController
   
   def index
-    @objects = Employee.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
-    render :json => { :employees => @objects , :total => Employee.active_objects.count, :success => true }
+    if params[:livesearch].present? 
+      livesearch = "%#{params[:livesearch]}%"
+      @objects = Employee.where{
+        (is_deleted.eq false) & 
+        (
+          (name =~  livesearch )
+        )
+        
+      }.page(params[:page]).per(params[:limit]).order("id DESC")
+      
+      @total = Employee.where{
+        (is_deleted.eq false) | 
+        (name =~  livesearch )
+      }.count
+    else
+      @objects = Employee.active_objects.page(params[:page]).per(params[:limit]).order("id DESC")
+      @total = Employee.active_objects.count
+    end
+    
+    render :json => { :employees => @objects , :total => @total , :success => true }
   end
 
   def create

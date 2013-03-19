@@ -34,10 +34,23 @@ Ext.define('AM.controller.Employees', {
       },
       'employeelist button[action=deleteObject]': {
         click: this.deleteObject
-      } 
+      },
+			'employeelist textfield[name=searchField]': {
+        change: this.liveSearch
+      }
 		
     });
   },
+
+	liveSearch : function(grid, newValue, oldValue, options){
+		var me = this;
+
+		me.getEmployeesStore().getProxy().extraParams = {
+		    livesearch: newValue
+		};
+	 
+		me.getEmployeesStore().load();
+	},
  
 
 	loadObjectList : function(me){
